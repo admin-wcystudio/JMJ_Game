@@ -388,7 +388,7 @@ export class CustomFailPanel extends Phaser.GameObjects.Container {
 
 }
 
-
+// game 3 
 export class QuestionPanel extends Phaser.GameObjects.Container {
     constructor(scene, contents, onComplete) {
         super(scene, 960, 540);
@@ -426,8 +426,11 @@ export class QuestionPanel extends Phaser.GameObjects.Container {
 
         const options = q.options || q.option; // Support both 'options' and 'option'
         options.forEach((optKey, index) => {
-            const y = -100 + index * 120;
-            const btn = new CustomButton(this.scene, 0, y, optKey, `${optKey}_select`,
+            const col = index % 2;
+            const row = Math.floor(index / 2);
+            const x = col === 0 ? -260 : 260;
+            const y = row === 0 ? 100 : 260;
+            const btn = new CustomButton(this.scene, x, y, optKey, `${optKey}_select`,
                 () => {
                     this.selectedAnswer(btn, index);
                 });
@@ -454,13 +457,13 @@ export class QuestionPanel extends Phaser.GameObjects.Container {
 
         console.log(`Selected: ${this.selectedAnswerIndex}, Correct: ${q.answer}`);
         if (this.selectedAnswerIndex === q.answer) {
-            if (this.scene.updateRoundUI) {
-                this.scene.updateRoundUI(true);
-                this.scene.roundIndex++;
-                this.nextQuestion();
-            }
+            this.scene.updateRoundUI(true);
+            this.scene.roundIndex++;
+            this.nextQuestion();
+
         } else {
             console.log("答錯了 , correct : " + q.answer);
+            this.scene.updateRoundUI(true);
             this.setVisible(false);
             this.scene.handleLose();
         }
