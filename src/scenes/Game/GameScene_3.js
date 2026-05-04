@@ -134,4 +134,22 @@ export class GameScene_3 extends BaseGameScene {
         objectPanel.setCloseCallBack(() => GameManager.backToMainStreet(this));
     }
 
+
+    onRoundWin() {
+        if (!this.isGameActive || this.gameState === 'gameWin') return;
+
+        let isFinalWin = (this.roundIndex + 1 >= this.targetRounds) || this.isAllowRoundFail;
+        this.gameState = isFinalWin ? 'gameWin' : 'roundWin';
+
+        if (isFinalWin) {
+            this.gameTimer.stop();
+            this._calculateTiming(true);
+            this.enableGameInteraction(false);
+
+            this.showFeedbackLabel(true);
+            this.showBubble('win');
+        }
+        this.updateRoundUI(true);
+
+    }
 }

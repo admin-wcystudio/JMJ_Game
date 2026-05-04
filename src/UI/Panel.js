@@ -432,23 +432,27 @@ export class QuestionPanel extends Phaser.GameObjects.Container {
             const y = row === 0 ? 100 : 260;
             const btn = new CustomButton(this.scene, x, y, optKey, `${optKey}_select`,
                 () => {
+                    console.log(`${optKey}_select`);
                     this.selectedAnswer(btn, index);
                 });
+            btn.needClicked = true;
 
             this.add(btn); // 加入 Container
             this.optionButtons.push(btn); // 加入陣列追蹤
         });
     }
-
-    handleSelect(index) {
-        // Deprecated: use selectedAnswer instead
-        this.selectedAnswer(this.optionButtons[index], index);
-    }
     selectedAnswer(gameObject, index) {
-        // Clear tint for all buttons
-        this.optionButtons.forEach(btn => btn.clearTint());
-        // Set tint for selected button
-        gameObject.setTint(0xaaaaaa);
+        // Reset all buttons to normal state
+        this.optionButtons.forEach(btn => {
+            btn.isClicked = false;
+            btn.setNormalState();
+            btn.clearTint();
+        });
+
+        console.log('Selected answer index:', index);
+        // Lock selected button in pressed/highlighted state
+        gameObject.isClicked = true;
+        gameObject.setPressedState();
         this.selectedAnswerIndex = index;
     }
 
@@ -476,7 +480,6 @@ export class QuestionPanel extends Phaser.GameObjects.Container {
 
         console.log(`Selected: ${this.selectedAnswerIndex}, Correct: ${q.answer}`);
         if (this.selectedAnswerIndex === q.answer) {
-            this.scene.updateRoundUI(true);
             this.showDescription();
         } else {
             console.log("答錯了 , correct : " + q.answer);
@@ -488,6 +491,7 @@ export class QuestionPanel extends Phaser.GameObjects.Container {
 
     nextQuestion() {
         this.scene.onRoundWin();
+        this.scene.roundIndex++;
         this.currentIndex++;
         if (this.currentIndex < this.questions.length) {
             this.confirmBtn.setVisible(true);
@@ -545,6 +549,7 @@ export class QuestionPanel_7 extends Phaser.GameObjects.Container {
                 () => {
                     this.selectedAnswer(btn, index);
                 });
+            btn.needClicked = true;
 
             this.add(btn); // 加入 Container
             this.optionButtons.push(btn); // 加入陣列追蹤
@@ -556,10 +561,15 @@ export class QuestionPanel_7 extends Phaser.GameObjects.Container {
         this.selectedAnswer(this.optionButtons[index], index);
     }
     selectedAnswer(gameObject, index) {
-        // Clear tint for all buttons
-        this.optionButtons.forEach(btn => btn.clearTint());
-        // Set tint for selected button
-        gameObject.setTint(0xaaaaaa);
+        // Reset all buttons to normal state
+        this.optionButtons.forEach(btn => {
+            btn.isClicked = false;
+            btn.setNormalState();
+            btn.clearTint();
+        });
+        // Lock selected button in pressed/highlighted state
+        gameObject.isClicked = true;
+        gameObject.setPressedState();
         this.selectedAnswerIndex = index;
     }
 
