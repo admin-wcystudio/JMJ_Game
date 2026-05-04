@@ -42,12 +42,6 @@ export class GameResultScene extends Phaser.Scene {
         this.load.image('program_information_p3', `${path}program_information_p3.png`);
         this.load.image('program_information_p4', `${path}program_information_p4.png`);
 
-        this.load.image('dialogue', `assets/images/Game_7/game7_npc_box1.png`);
-        this.load.image('popup_01', `assets/images/Game_7/game7_popup1.png`);
-        this.load.image('popup_02', `assets/images/Game_7/game7_popup2.png`);
-        this.load.image('receive_button', `assets/images/Game_7/game7_receive_button.png`);
-        this.load.image('receive_button_select', `assets/images/Game_7/game7_receive_button_select.png`);
-
 
         // Items (1-10)
         for (let i = 1; i <= 10; i++) {
@@ -91,10 +85,6 @@ export class GameResultScene extends Phaser.Scene {
                     this.resultGroup.add(this.itemImage);
                 }
 
-                if (!this.isGame7Completed) {
-                    this.showDialogue();
-                }
-
             }).setDepth(11);
         this.resultGroup.add(this.button);
 
@@ -126,22 +116,12 @@ export class GameResultScene extends Phaser.Scene {
 
     }
 
-    showDialogue() {
-
-        const dialogY = this.cameras.main.height * 0.85;
-        this.dialogue = this.add.image(960, dialogY, 'dialogue').setDepth(20).setInteractive({ useHandCursor: true });
-
-        this.dialogue.on('pointerdown', () => {
-            this.dialogue.destroy();
-            this.showGame7Popup(this.isGame7Completed);
-        });
-    }
 
     takeScreenshot() {
         const playerName = this.playerInfo ? this.playerInfo.name : "玩家 1";
         this.game.renderer.snapshot((image) => {
             const link = document.createElement('a');
-            link.setAttribute('download', `為學_${playerName}_${new Date().getTime()}.png`);
+            link.setAttribute('download', `虞美人_${playerName}_${new Date().getTime()}.png`);
             link.setAttribute('href', image.src);
             document.body.appendChild(link);
             link.click();
@@ -191,21 +171,6 @@ export class GameResultScene extends Phaser.Scene {
         return `finishpage_items${itemIndex}`;
     }
 
-    showGame7Popup(isCompleted) {
-        const popup = this.add.image(960, 540, 'popup_01').setDepth(20);
-        const receiveButton =
-            new CustomButton(this, 960, 750, 'receive_button', 'receive_button_select',
-                () => {
-                    this.time.delayedCall(
-                        2000, () => {
-                            popup.destroy();
-                            receiveButton.destroy();
-                            console.log("Game 7 not completed, returning to Game Scene 7");
-                            GameManager.switchToGameScene(this, 'GameScene_7');
-                        });
-                });
-        receiveButton.setDepth(21);
 
-    }
 
 }
