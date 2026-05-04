@@ -1,443 +1,221 @@
-
 import BaseGameScene from './BaseGameScene.js';
 import { CustomButton } from '../../UI/Button.js';
-import { CustomPanel, CustomFailPanel, QuestionPanel } from '../../UI/Panel.js';
+import { CustomPanel, CustomFailPanel } from '../../UI/Panel.js';
 import GameManager from '../GameManager.js';
 
 export class GameScene_1 extends BaseGameScene {
     constructor() {
         super('GameScene_1');
     }
-
     preload() {
-
         const path = 'assets/images/Game_1/';
 
         this.width = this.cameras.main.width;
         this.height = this.cameras.main.height;
         this.centerX = this.width / 2;
-        this.centerY = this.height / 2
-
-        this.load.image('game1_confirm_button', `${path}game1_confirm_button.png`);
-        this.load.image('game1_confirm_button_select', `${path}game1_confirm_button_select.png`);
-
-        this.load.image('game1_npc_box_mainstreet_01', `${path}game1_npc_box1.png`);
-        this.load.image('game1_npc_box_mainstreet_boy', `${path}game1_npc_box2_boy.png`);
-        this.load.image('game1_npc_box_mainstreet_girl', `${path}game1_npc_box2_girl.png`);
-
-        for (let i = 3; i <= 7; i++) {
-            this.load.image(`game1_npc_box${i}`, `${path}game1_npc_box${i}.png`);
-        }
-
-        this.load.image('game1_npc_box_win', `${path}game1_npc_box8.png`);
-        this.load.image('game1_npc_box_tryagain', `${path}game1_npc_box9.png`);
-
-        this.load.image(`game1_select_area`, `${path}game1_select_area.png`);
-        this.load.image('game1_object_description', `${path}game1_object_description.png`);
-
-        for (let i = 1; i <= 5; i++) {
-            this.load.image(`game1_q${i}`, `${path}game1_q${i}.png`);
-            this.load.image(`game1_q${i}_correct_answer1`, `${path}game1_q${i}_correct_answer1.png`);
-            this.load.image(`game1_q${i}_fail_answer2`, `${path}game1_q${i}_fail_answer2.png`);
-            this.load.image(`game1_q${i}_fail_answer3`, `${path}game1_q${i}_fail_answer3.png`);
-            this.load.image(`game1_q${i}_fail_answer4`, `${path}game1_q${i}_fail_answer4.png`);
-            this.load.image(`game1_q${i}_fill_answer1`, `${path}game1_q${i}_fill_answer1.png`);
-            this.load.image(`game1_q${i}_fill_answer2`, `${path}game1_q${i}_fill_answer2.png`);
-            this.load.image(`game1_q${i}_fill_answer3`, `${path}game1_q${i}_fill_answer3.png`);
-            this.load.image(`game1_q${i}_fill_answer4`, `${path}game1_q${i}_fill_answer4.png`);
-
-        }
-    }
-    create() {
-        this.width = this.cameras.main.width;
-        this.height = this.cameras.main.height;
-        this.centerX = this.width / 2;
         this.centerY = this.height / 2;
 
+        this.load.image('game1_npc_box_mainstreet', `${path}game1_npc_box1.png`);
+        this.load.image('game1_npc_box_win', `${path}game1_npc_box2.png`);
+        this.load.image('game1_npc_box_tryagain', `${path}game1_npc_box3.png`);
+        this.load.image('game1_rotate', `${path}game1_rotate.png`);
+        this.load.image('game1_object_description', `${path}game1_object_description.png`);
 
-        this.spawnPositions = [
-            { x: this.centerX - 800, y: this.centerY - 100 },
-            { x: this.centerX + 800, y: this.centerY - 100 },
-            { x: this.centerX - 800, y: this.centerY + 100 },
-            { x: this.centerX + 800, y: this.centerY + 100 },
-        ];
+        this.load.image('game1_puzzle_guide', `${path}game1_puzzle_guide.png`);
 
-        this.spawnPositions_q2 = [
-            { x: this.centerX - 800, y: this.centerY - 200 },
-            { x: this.centerX + 800, y: this.centerY - 200 },
-            { x: this.centerX - 800, y: this.centerY + 200 },
-            { x: this.centerX + 800, y: this.centerY + 200 },
-            { x: this.centerX - 800, y: this.centerY },
-            { x: this.centerX + 800, y: this.centerY }
-        ];
+        for (let i = 1; i <= 6; i++) {
+            this.load.image(`game1_puzzle${i}`, `${path}game1_puzzle${i}.png`);
+        }
 
-        this.questionOrder = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 5]).slice(0, 3);
-        console.log('Shuffled question order:', this.questionOrder);
-        this.currentIndex = 0;
+        this.gender = 'F';
+        if (localStorage.getItem('player')) {
+            this.gender = JSON.parse(localStorage.getItem('player')).gender;
+        }
 
-        // Now call initGame which will call setupGameObjects
+        this.load.spritesheet('game1_success_preview',
+            `${path}game1_success_preview.png`, {
+            frameWidth: 248,
+            frameHeight: 350.5
+        });
+
+    }
+
+    create() {
         this.initGame('game1_bg', 'game1_description', true, false, {
-            targetRounds: 3,
+            targetRounds: 1,
             roundPerSeconds: 60,
             isAllowRoundFail: false,
             isContinuousTimer: true,
             sceneIndex: 1
         });
-
-        // this.gameUI.descriptionPanel.setVisible(false);
+        this.anims.create({
+            key: 'success_preview_anim',
+            frames: this.anims.generateFrameNumbers('game1_success_preview', { start: 0, end: 48 }),
+            framerate: 30,
+            repeat: -1
+        });
 
     }
-
     setupGameObjects() {
+        this.selectedPuzzle = null;
+
+        if (this.guide) this.guide.destroy();
+        if (this.rotateButton) this.rotateButton.destroy();
         this.input.removeAllListeners('drag');
         this.input.removeAllListeners('dragend');
 
-        const currentQuestionId = this.questionOrder[this.currentIndex];
-        this.questionImage = this.add.image(this.centerX,
-            this.centerY + 50, `game1_q${currentQuestionId}`).setDepth(200);
+        const centerX = this.cameras.main.width / 2;
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
 
-        this.confirmBtn = new CustomButton(this, this.centerX, this.centerY + 450,
-            'game1_confirm_button', 'game1_confirm_button_select', () => {
-                this.checkAnswer();
-            });
-        this.confirmBtn.setDepth(200).setVisible(true);
-
-        this.choices = [
-            {
-                q: 1,
-                answers: [
-                    'game1_q1_correct_answer1',
-                    'game1_q1_fail_answer2', 'game1_q1_fail_answer3',
-                    'game1_q1_fail_answer4'
-                ],
-                fillAnswers: [
-                    'game1_q1_fill_answer1',
-                    'game1_q1_fill_answer2', 'game1_q1_fill_answer3',
-                    'game1_q1_fill_answer4'
-                ]
-            },
-            {
-                q: 2,
-                answers: [
-                    'game1_q2_correct_answer1',
-                    'game1_q2_fail_answer2', 'game1_q2_fail_answer3',
-                    'game1_q2_fail_answer4',
-                    'game1_q2_correct_answer1', 'game1_q2_fail_answer3',
-                ],
-                fillAnswers: [
-                    'game1_q2_fill_answer1',
-                    'game1_q2_fill_answer2', 'game1_q2_fill_answer3',
-                    'game1_q2_fill_answer4',
-                    'game1_q2_fill_answer1', 'game1_q2_fill_answer3',
-                ]
-            },
-            {
-                q: 3,
-                answers: [
-                    'game1_q3_correct_answer1',
-                    'game1_q3_fail_answer2', 'game1_q3_fail_answer3',
-                    'game1_q3_fail_answer4'
-                ],
-                fillAnswers: [
-                    'game1_q3_fill_answer1',
-                    'game1_q3_fill_answer2', 'game1_q3_fill_answer3',
-                    'game1_q3_fill_answer4'
-                ]
-            },
-            {
-                q: 4,
-                answers: [
-                    'game1_q4_correct_answer1',
-                    'game1_q4_fail_answer2', 'game1_q4_fail_answer3',
-                    'game1_q4_fail_answer4'
-                ],
-                fillAnswers: [
-                    'game1_q4_fill_answer1',
-                    'game1_q4_fill_answer2', 'game1_q4_fill_answer3',
-                    'game1_q4_fill_answer4'
-                ]
-            },
-            {
-                q: 5,
-                answers: [
-                    'game1_q5_correct_answer1',
-                    'game1_q5_fail_answer2', 'game1_q5_fail_answer3',
-                    'game1_q5_fail_answer4'
-                ],
-                fillAnswers: [
-                    'game1_q5_fill_answer1',
-                    'game1_q5_fill_answer2', 'game1_q5_fill_answer3',
-                    'game1_q5_fill_answer4'
-                ]
-            }
+        const defaultPuzzles = [
+            { content: 'game1_puzzle1', targetX: centerX - 100, targetY: 260 },
+            { content: 'game1_puzzle2', targetX: centerX + 100, targetY: 260 },
+            { content: 'game1_puzzle3', targetX: centerX - 100, targetY: 460 },
+            { content: 'game1_puzzle4', targetX: centerX + 100, targetY: 460 },
+            { content: 'game1_puzzle5', targetX: centerX - 100, targetY: 660 },
+            { content: 'game1_puzzle6', targetX: centerX + 100, targetY: 660 }
         ];
 
-        this.targetContents = [
-            {
-                q: 1,
-                fillPositions: [
-                    { x: 1110, y: 575, targetKey: 'game1_q1_correct_answer1' }
-                ],
-                descriptionDialog: 'game1_npc_box3'
-            },
-            {
-                q: 2,
-                fillPositions: [
-                    { x: 740, y: 565, targetKey: 'game1_q2_correct_answer1' },
-                    { x: 1335, y: 565, targetKey: 'game1_q2_correct_answer1' }
-                ],
-                descriptionDialog: 'game1_npc_box4'
-            },
-            {
-                q: 3,
-                fillPositions: [
-                    { x: 1055, y: 575, targetKey: 'game1_q3_correct_answer1' }
-                ],
-                descriptionDialog: 'game1_npc_box5'
-            },
-            {
-                q: 4,
-                fillPositions: [
-                    { x: 670, y: 575, targetKey: 'game1_q4_correct_answer1' },
-                ],
-                descriptionDialog: 'game1_npc_box6'
-            },
-            {
-                q: 5,
-                fillPositions: [
-                    { x: 1335, y: 575, targetKey: 'game1_q5_correct_answer1' }
-                ],
-                descriptionDialog: 'game1_npc_box7'
-            }
-        ];
+        this.puzzleGroup = this.add.group();
 
-        const currentFillPositions = this.targetContents.find(c => c.q === currentQuestionId).fillPositions;
 
-        // // Debug graphics for fill positions
-        // if (!this.fillDebugGraphics) {
-        //     this.fillDebugGraphics = this.add.graphics();
-        // }
-        // this.fillDebugGraphics.clear();
-        // this.fillDebugGraphics.setDepth(250);
-        // this.fillDebugGraphics.lineStyle(3, 0x00ff00, 1); // Green border
-        // this.fillDebugGraphics.fillStyle(0x00ff00, 0.3); // Semi-transparent green fill
+        this.guide = this.add.image(centerX, 460, 'game1_puzzle_guide').setDepth(10);
 
-        // currentFillPositions.forEach((slot, index) => {
-        //     const radius = 30;
-        //     this.fillDebugGraphics.strokeCircle(slot.x, slot.y, radius);
-        //     this.fillDebugGraphics.fillCircle(slot.x, slot.y, radius);
+        defaultPuzzles.forEach(data => {
+            let piece = this.add.image(0, 0, data.content).setDepth(50);
+            piece.setData({ targetX: data.targetX, targetY: data.targetY, isCorrect: false });
+            piece.on('pointerdown', () => this.selectPuzzle(piece));
+            this.puzzleGroup.add(piece);
+        });
+
+        this.randomPuzzlePosition(this.puzzleGroup.getChildren());
+
+        // 旋轉按鈕
+        this.rotateButton = new CustomButton(this, width - 200, height - 200, 'game1_rotate', null, () => {
+            if (this.selectedPuzzle) this.selectedPuzzle.angle += 90;
+        }).setDepth(100);
+
+        // 拖拽事件 (搬移到這裡確保只設定一次)
+        this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+            if (this.selectedPuzzle !== gameObject) this.selectPuzzle(gameObject);
+            gameObject.setPosition(dragX, dragY).setDepth(100);
+        });
+
+        this.input.on('dragend', (pointer, gameObject) => {
+            gameObject.setDepth(50);
+            this.checkSnap(gameObject);
+        });
+
+
+        //==== Debug Graphics ===========================================================
+        // const debugGraphics = this.add.graphics().setDepth(2); // 擺喺背景上面，物件下面
+        // debugGraphics.lineStyle(3, 0xff0000, 1); // 紅色線，粗度 2
+
+        // defaultPuzzles.forEach(data => {
+        //     const rectSize = 200;
+        //     const startX = data.targetX - rectSize / 2;
+        //     const startY = data.targetY - rectSize / 2;
+
+        //     // 畫出目標區域矩形
+        //     debugGraphics.strokeRect(startX, startY, rectSize, rectSize);
+
+        //     // 喺方框旁邊寫低係邊塊 Puzzle，方便對號入座
+        //     this.add.text(startX, startY - 20, data.content, {
+        //         fontSize: '16px',
+        //         fill: '#ff0000'
+        //     }).setDepth(1);
         // });
 
-        // Build answerKey → fillAnswerKey lookup
-        const choice = this.choices.find(c => c.q === currentQuestionId);
-        const answerToFillMap = {};
-        choice.answers.forEach((key, i) => { answerToFillMap[key] = choice.fillAnswers[i]; });
-
-        // Build fill slots with invisible hint images
-        const snapTolerance = 100;
-        this.fillSlots = currentFillPositions.map(slot => ({
-            x: slot.x,
-            y: slot.y,
-            targetKey: slot.targetKey,
-            occupiedBy: null,
-            hintImage: this.add.image(slot.x, slot.y, 'game1_select_area')
-                .setDepth(199).setAlpha(0),
-            snapImage: null
-        }));
-
-        // Spawn answers at shuffled positions
-        const spawnPool = currentQuestionId === 2 ? this.spawnPositions_q2 : this.spawnPositions;
-        const shuffledPositions = Phaser.Utils.Array.Shuffle([...spawnPool]);
-        this.answerImages = [];
-        choice.answers.forEach((answerKey, index) => {
-            const pos = shuffledPositions[index];
-            const fillKey = answerToFillMap[answerKey];
-            const img = this.add.image(pos.x, pos.y, answerKey)
-                .setDepth(200)
-                .setInteractive({ draggable: true, useHandCursor: true });
-            img.setData({ answerKey, fillKey, originX: pos.x, originY: pos.y });
-            this.answerImages.push(img);
-        });
-
-        // Drag: move image and show hint on nearby empty slots
-        this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
-            gameObject.setPosition(dragX, dragY).setDepth(300);
-            const fillKey = gameObject.getData('fillKey');
-            this.fillSlots.forEach(slot => {
-                if (slot.occupiedBy) return;
-                const dist = Phaser.Math.Distance.Between(dragX, dragY, slot.x, slot.y);
-                if (dist < snapTolerance) {
-                    slot.hintImage.setTexture(fillKey).setAlpha(0.6);
-                } else {
-                    slot.hintImage.setAlpha(0);
-                }
-            });
-        });
-
-        // Drag end: snap to nearest slot or return to origin
-        this.input.on('dragend', (pointer, gameObject) => {
-            this.fillSlots.forEach(slot => slot.hintImage.setAlpha(0));
-
-            const answerKey = gameObject.getData('answerKey');
-            const fillKey = gameObject.getData('fillKey');
-
-            let nearest = null;
-            let nearestDist = snapTolerance;
-            this.fillSlots.forEach(slot => {
-                if (slot.occupiedBy) return;
-                const dist = Phaser.Math.Distance.Between(gameObject.x, gameObject.y, slot.x, slot.y);
-                if (dist < nearestDist) {
-                    nearestDist = dist;
-                    nearest = slot;
-                }
-            });
-
-            if (nearest) {
-                nearest.occupiedBy = answerKey;
-                nearest.snapImage = this.add.image(nearest.x, nearest.y, fillKey)
-                    .setDepth(200)
-                    .setInteractive({ useHandCursor: true });
-
-                // Store reference to original image for later restoration
-                nearest.originalImage = gameObject;
-                gameObject.setVisible(false).disableInteractive();
-
-                // Click on placed answer to remove it and restore original
-                nearest.snapImage.once('pointerdown', () => {
-                    // Restore original image to spawn position
-                    gameObject.setVisible(true);
-                    gameObject.setInteractive({ draggable: true, useHandCursor: true });
-                    gameObject.setPosition(
-                        gameObject.getData('originX'),
-                        gameObject.getData('originY')
-                    ).setDepth(200);
-
-                    // Clear slot
-                    nearest.snapImage.destroy();
-                    nearest.snapImage = null;
-                    nearest.occupiedBy = null;
-                    nearest.originalImage = null;
-                });
+        // const tolerance = 60; // 同你 checkSnap 裡面個數值一樣
+        // defaultPuzzles.forEach(data => {
+        //     debugGraphics.lineStyle(1, 0x00ff00, 0.5); // 綠色虛線感
+        //     debugGraphics.strokeCircle(data.targetX, data.targetY, tolerance);
+        // });
+    }
+    /**
+     * 控制拼圖是否可被操作
+     */
+    enableGameInteraction(enabled) {
+        this.puzzleGroup.getChildren().forEach(p => {
+            if (enabled) {
+                p.setInteractive({ draggable: true, useHandCursor: true });
             } else {
-                gameObject.setPosition(
-                    gameObject.getData('originX'),
-                    gameObject.getData('originY')
-                ).setDepth(200);
+                p.disableInteractive();
             }
         });
+        this.guide.setVisible(enabled);
     }
 
 
-    checkAnswer() {
-        const allCorrect = this.fillSlots.every(slot => slot.occupiedBy === slot.targetKey);
+    // --- 拼圖專用邏輯 (保持不變) ---
+
+    selectPuzzle(piece) {
+        if (this.selectedPuzzle) {
+            this.selectedPuzzle.clearTint();
+        }
+        this.selectedPuzzle = piece;
+        piece.setTint(0xaaaaaa);
+    }
+
+    checkSnap(piece) {
+        const { targetX, targetY } = piece.data.values;
+        const dist = Phaser.Math.Distance.Between(piece.x, piece.y, targetX, targetY);
+        const isAngleCorrect = (piece.angle % 360 === 0);
+
+        if (dist < 60 && isAngleCorrect) {
+            piece.setPosition(targetX, targetY).setData('isCorrect', true).disableInteractive().clearTint();
+            this.checkAllDone();
+        }
+    }
+
+    randomPuzzlePosition(puzzles) {
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
+        const allowedRotations = [0, 90, 180, 270];
+
+        puzzles.forEach(puzzle => {
+            puzzle.setPosition(centerX + Phaser.Math.Between(-400, 400), centerY + Phaser.Math.Between(-300, 100));
+            puzzle.setAngle(Phaser.Utils.Array.GetRandom(allowedRotations));
+        });
+    }
+
+    checkAllDone() {
+        const allCorrect = this.puzzleGroup.getChildren().every(p => p.getData('isCorrect'));
         if (allCorrect) {
+            console.log("所有拼圖完成!");
             this.onRoundWin();
-        } else {
-            this.handleLose();
         }
     }
 
     onRoundWin() {
         if (!this.isGameActive || this.gameState === 'gameWin') return;
 
-        let isFinalWin = (this.currentIndex + 1 >= this.targetRounds);
+        let isFinalWin = (this.roundIndex + 1 >= this.targetRounds) || this.isAllowRoundFail;
         this.gameState = isFinalWin ? 'gameWin' : 'roundWin';
 
-
-
-        if (isFinalWin) {
-            this.roundIndex = this.currentIndex;
-            this.gameTimer.stop();
-            this._calculateTiming(isFinalWin);
-            this.enableGameInteraction(false);
-            this.showFeedbackLabel(true);
-            this.showBubble('win');
-        } else {
-            this.gameTimer.stop();
-            this.enableGameInteraction(false);
-            this.showDescriptionDialog();
-            this.currentIndex++;
-            this.roundIndex = this.currentIndex - 1;
-
-        }
+        this.gameTimer.stop();
+        this._calculateTiming(isFinalWin);
+        this.enableGameInteraction(false);
         this.updateRoundUI(true);
+
+        // Feedback Visuals
+        this.showFeedbackLabel(true);
+        this.showBubble('win', this.playerGender);
+        this.playFeedback();
     }
 
-    enableGameInteraction(enabled) {
-        if (!this.answerImages) return;
-        this.answerImages.forEach(img => {
-            if (!img.active) return;
-            if (enabled) {
-                img.setInteractive({ draggable: true, useHandCursor: true });
-            } else {
-                img.disableInteractive();
-            }
-        });
+    playFeedback() {
+        this.puzzleGroup.setVisible(false);
+        if (this.successVideo) this.successVideo.destroy();
 
-        this.confirmBtn.setVisible(enabled);
+        this.previewSprite = this.add.sprite(960, 440,
+            'game1_success_preview').setDepth(1000).setScale(2);
+        this.previewSprite.play('success_preview_anim');
     }
 
-    resetForNewRound() {
-        // Reset currentIndex and shuffle questions on full game restart (restartGame sets gameState to 'init')
-        if (this.gameState === 'init') {
-            this.currentIndex = 0;
-            this.questionOrder = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 5]).slice(0, 3);
-            console.log('Shuffled question order:', this.questionOrder);
-        }
-
-        // Keep roundIndex aligned with current active question
-        this.roundIndex = this.currentIndex;
-
-        // Destroy question image
-        if (this.questionImage) { this.questionImage.destroy(); this.questionImage = null; }
-
-        // Destroy confirm button
-        if (this.confirmBtn) { this.confirmBtn.destroy(); this.confirmBtn = null; }
-
-        // Destroy answer images
-        if (this.answerImages) {
-            this.answerImages.forEach(img => img.destroy());
-            this.answerImages = [];
-        }
-
-        // Destroy fill slot hint/snap images
-        if (this.fillSlots) {
-            this.fillSlots.forEach(slot => {
-                if (slot.hintImage) slot.hintImage.destroy();
-                if (slot.snapImage) slot.snapImage.destroy();
-            });
-            this.fillSlots = [];
-        }
-
-        this.setupGameObjects();
-
-        // Reset game state for new round
-        this.gameState = 'playing';
-        this.isGameActive = true;
-        this.gameTimer.start();
-        this.enableGameInteraction(true);
-
-    }
     showWin() {
         this.showObjectPanel();
-    }
-
-    showDescriptionDialog() {
-        const currentQuestionId = this.questionOrder[this.currentIndex];
-        const targetContent = this.targetContents.find(c => c.q === currentQuestionId);
-
-        this.descriptionDialog = this.add.image(
-            this.centerX, this.cameras.main.height * 0.8,
-            targetContent?.descriptionDialog)
-            .setDepth(300)
-            .setInteractive({ useHandCursor: true });
-
-        this.descriptionDialog.once('pointerdown', () => {
-            this.descriptionDialog.destroy();
-
-            this.resetForNewRound();
-        });
-
     }
 
     showObjectPanel() {
@@ -450,6 +228,17 @@ export class GameScene_1 extends BaseGameScene {
         objectPanel.show();
         objectPanel.setCloseCallBack(() => GameManager.backToMainStreet(this));
     }
+
+
+    /**
+     * 重置每一局的拼圖狀態
+     */
+    resetForNewRound() {
+        this.puzzleGroup.setVisible(true);
+        this.puzzleGroup.getChildren().forEach(p => p.setData('isCorrect', false));
+        this.randomPuzzlePosition(this.puzzleGroup.getChildren());
+    }
+
 
 
 }

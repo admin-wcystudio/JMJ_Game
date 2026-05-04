@@ -64,18 +64,21 @@ export class BootScene extends Phaser.Scene {
 
         // dynamically load all known item assets
         const itemKeys = [
-            'game7_itempage_item1',
-            'game7_itempage_item1_select',
+            'itempage_item1',
+            'itempage_item1_select',
             'game1_object_description',
-            'game7_itempage_item2_select',
-            'game7_itempage_item2',
+            'itempage_item2_select',
+            'itempage_item2',
             'game2_object_description',
-            'game7_itempage_item3',
-            'game7_itempage_item3_select',
+            'itempage_item3',
+            'itempage_item3_select',
             'game3_object_description',
-            'game7_itempage_item4',
-            'game7_itempage_item4_select',
+            'itempage_item4',
+            'itempage_item4_select',
             'game4_object_description',
+            'itempage_item5',
+            'itempage_item5_select',
+            'game5_object_description',
             'itempage_item_box',
             'itempage_bg',
             'itempage_panel_bg',
@@ -121,7 +124,6 @@ export class BootScene extends Phaser.Scene {
 
         }
 
-
     }
 
     create() {
@@ -136,7 +138,7 @@ export class BootScene extends Phaser.Scene {
 
             this.registry.set('globalSettings', settings);
         }
-        this.scene.start('GameScene_5');
+        this.scene.start('GameScene_1');
     }
 }
 
