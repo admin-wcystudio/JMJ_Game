@@ -452,18 +452,35 @@ export class QuestionPanel extends Phaser.GameObjects.Container {
         this.selectedAnswerIndex = index;
     }
 
+    showDescription() {
+        const q = this.questions[this.currentIndex];
+        const descriptionKey = q.detail;
+
+        console.log('Showing description for question:', descriptionKey);
+
+        this.descriptionPanel = new CustomPanel(this.scene, 960, 540, [{
+            content: descriptionKey,
+            closeBtn: 'close_btn',
+            closeBtnClick: 'close_btn_click'
+        }]);
+        this.descriptionPanel.setDepth(2000).setVisible(true);
+        this.descriptionPanel.setCloseCallBack(() => {
+            this.descriptionPanel.destroy();
+            this.descriptionPanel = null;
+            this.nextQuestion();
+        });
+    }
+
     checkAnswer() {
         const q = this.questions[this.currentIndex];
 
         console.log(`Selected: ${this.selectedAnswerIndex}, Correct: ${q.answer}`);
         if (this.selectedAnswerIndex === q.answer) {
             this.scene.updateRoundUI(true);
-            this.scene.roundIndex++;
-            this.nextQuestion();
-
+            this.showDescription();
         } else {
             console.log("答錯了 , correct : " + q.answer);
-            this.scene.updateRoundUI(true);
+            this.scene.updateRoundUI(false);
             this.setVisible(false);
             this.scene.handleLose();
         }

@@ -26,6 +26,7 @@ export class GameScene_3 extends BaseGameScene {
 
         for (let i = 1; i <= 5; i++) {
             this.load.image(`game3_q${i}`, `${path}game3_q${i}_box.png`);
+            this.load.image(`game3_q${i}_description`, `${path}game3_q${i}_description.png`);
             this.load.image(`game3_q${i}_a_button`, `${path}game3_q${i}_a_button.png`);
             this.load.image(`game3_q${i}_b_button`, `${path}game3_q${i}_b_button.png`);
             this.load.image(`game3_q${i}_c_button`, `${path}game3_q${i}_c_button.png`);
@@ -35,10 +36,13 @@ export class GameScene_3 extends BaseGameScene {
             this.load.image(`game3_q${i}_c_button_select`, `${path}game3_q${i}_c_button_select.png`);
             this.load.image(`game3_q${i}_d_button_select`, `${path}game3_q${i}_d_button_select.png`);
         }
+
+        for (let i = 1; i <= 3; i++) {
+            this.load.image(`game3_q${i}_title`, `${path}game3_q${i}_title.png`);
+        }
     }
 
     create() {
-
         // Pass null for bgKey since using video background
         this.initGame('game3_bg', 'game3_description', true, false, {
             targetRounds: 3,
@@ -47,7 +51,6 @@ export class GameScene_3 extends BaseGameScene {
             isContinuousTimer: true,
             sceneIndex: 3
         });
-        //this.gameUI.descriptionPanel.setVisible(false);
     }
 
     setupGameObjects() {
@@ -61,26 +64,31 @@ export class GameScene_3 extends BaseGameScene {
                 content: 'game3_q1',
                 options: ['game3_q1_a_button', 'game3_q1_b_button', 'game3_q1_c_button', 'game3_q1_d_button'],
                 answer: 2,
+                detail: 'game3_q1_description'
             },
             {
                 content: 'game3_q2',
                 options: ['game3_q2_a_button', 'game3_q2_b_button', 'game3_q2_c_button', 'game3_q2_d_button'],
                 answer: 0,
+                detail: 'game3_q2_description'
             },
             {
                 content: 'game3_q3',
                 options: ['game3_q3_a_button', 'game3_q3_b_button', 'game3_q3_c_button', 'game3_q3_d_button'],
                 answer: 2,
+                detail: 'game3_q3_description'
             },
             {
                 content: 'game3_q4',
                 options: ['game3_q4_a_button', 'game3_q4_b_button', 'game3_q4_c_button', 'game3_q4_d_button'],
                 answer: 1,
+                detail: 'game3_q4_description'
             },
             {
                 content: 'game3_q5',
                 options: ['game3_q5_a_button', 'game3_q5_b_button', 'game3_q5_c_button', 'game3_q5_d_button'],
                 answer: 2,
+                detail: 'game3_q5_description'
             }
         ];
 
