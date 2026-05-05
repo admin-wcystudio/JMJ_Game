@@ -79,11 +79,12 @@ export class BootScene extends Phaser.Scene {
             'itempage_item5',
             'itempage_item5_select',
             'game5_object_description',
+
             'itempage_item_box',
             'itempage_bg',
             'itempage_panel_bg',
             'itempage_close_button',
-            'itempage_close_button_select'
+            'itempage_close_button_select',
         ];
         itemKeys.forEach(key => {
             this.load.image(key, `${itemsPath}${key}.png`);

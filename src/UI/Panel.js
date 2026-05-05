@@ -95,6 +95,10 @@ export class CustomPanel extends BasePanel {
         }
     }
 
+    setNextButtonPosition(x, y) {
+        this.nextBtn.setPosition(570 + x, 260 + y);
+    }
+
     changePage(dir) {
         this.currentPage = Phaser.Math.Clamp(this.currentPage + dir, 0, this.pages.length - 1);
         this.refresh();

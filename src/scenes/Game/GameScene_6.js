@@ -8,7 +8,6 @@ export class GameScene_6 extends BaseGameScene {
     constructor() {
         super('GameScene_6');
     }
-
     preload() {
         const path = 'assets/images/Game_6/';
         this.load.image('confirm_button', `${path}game6_confirm_button.png`);
@@ -16,7 +15,7 @@ export class GameScene_6 extends BaseGameScene {
 
         this.load.image('game2_npc_box_mainstreet_01', `${path}game6_npc_box1.png`);
         this.load.image('game2_npc_box_mainstreet_02', `${path}game6_npc_box2.png`);
-        this.load.image('game6_npc_box_win_01', `${path}game6_npc_box3.png`);
+        this.load.image('game6_npc_box_win', `${path}game6_npc_box3.png`);
         this.load.image('game6_npc_box_win_02', `${path}game6_npc_box4.png`);
         this.load.image('game6_npc_box_tryagain', `${path}game6_npc_box5.png`);
 
@@ -52,8 +51,6 @@ export class GameScene_6 extends BaseGameScene {
             isContinuousTimer: false,
             sceneIndex: 6
         });
-
-        this.gameUI.descriptionPanel.setVisible(false);
 
         // Create confirm button
         this.confirmBtn = new CustomButton(this, this.centerX, this.height - 100,
@@ -151,8 +148,8 @@ export class GameScene_6 extends BaseGameScene {
             }
         });
 
-        this.border1_correctObjects = [1];
-        this.border2_correctObjects = [2];
+        this.border1_correctObjects = [2];
+        this.border2_correctObjects = [1];
         this.border3_correctObjects = [3];
         this.drawDebug();
 
@@ -210,22 +207,12 @@ export class GameScene_6 extends BaseGameScene {
             // Track this object at the new position
             this.positionObjects[nearestIndex] = gameObject.objectId;
             nearestPos.isOccupied = true;
-
-            // Debug log for snap positions
-            if (nearestIndex >= 0 && nearestIndex <= 1) {
-                console.log(`[SNAP] Object ${gameObject.objectId} snapped to snapPosition[${nearestIndex}] at border1`);
-            } else if (nearestIndex >= 2 && nearestIndex <= 3) {
-                console.log(`[SNAP] Object ${gameObject.objectId} snapped to snapPosition[${nearestIndex}] at border2`);
-            } else if (nearestIndex >= 4 && nearestIndex <= 5) {
-                console.log(`[SNAP] Object ${gameObject.objectId} snapped to snapPosition[${nearestIndex}] at border3`);
-            }
         }
 
         return { snapPos: nearestPos, index: nearestIndex };
     }
 
     checkIfAllOccupied() {
-        // Check if all 6 positions (3 borders) are occupied
         const allPositions = [0, 1, 2];
         const allOccupied = allPositions.every(i => this.positionObjects.hasOwnProperty(i));
 
@@ -256,7 +243,6 @@ export class GameScene_6 extends BaseGameScene {
 
         const border1Positions = [0];
         const border1Objects = border1Positions.map(i => this.positionObjects[i]).filter(id => id !== undefined);
-
 
         const border2Positions = [1];
         const border2Objects = border2Positions.map(i => this.positionObjects[i]).filter(id => id !== undefined);
@@ -316,16 +302,39 @@ export class GameScene_6 extends BaseGameScene {
         });
     }
 
-    showWin() {
+    onWinBubbleClose() {
+
         this.objects.forEach(obj => obj.setVisible(false));
         if (this.confirmBtn) this.confirmBtn.setVisible(false);
+        this.nextDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game6_npc_box_win_02').setDepth(1000);
+        this.nextDialog.setInteractive({ useHandCursor: true });
+        this.nextDialog.once('pointerdown', () => {
+            this.nextDialog.destroy();
+            this.showDescriptionPanel();
+        });
+    }
 
-        this.showObjectPanel();
+
+    showDescriptionPanel() {
+        console.log('[DESCRIPTION] Showing success description panel');
+        const descriptionPanel = new CustomPanel(this, 960, 540, [
+            { content: 'game6_success_description1' },
+            { content: 'game6_success_description2' }
+        ]);
+
+        descriptionPanel.setDepth(1000);
+        descriptionPanel.show();
+        descriptionPanel.setNextButtonPosition(100, 0);
+        descriptionPanel.setCloseCallBack
+            (() => {
+                descriptionPanel.destroy();
+                this.showObjectPanel();
+            });
     }
 
     showObjectPanel() {
         const objectPanel = new CustomPanel(this, 960, 600, [{
-            content: 'game6_object_description',
+            content: 'game5_object_description',
             closeBtn: 'close_btn',
             closeBtnClick: 'close_btn_click'
         }]);
@@ -336,8 +345,6 @@ export class GameScene_6 extends BaseGameScene {
 
 
     drawDebug() {
-
-        // Debug graphics - draw snap positions
         this.debugGraphics = this.add.graphics();
         this.debugGraphics.lineStyle(2, 0xff0000, 0.5);
         this.debugGraphics.fillStyle(0xff0000, 0.2);
