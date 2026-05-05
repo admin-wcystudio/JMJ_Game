@@ -267,7 +267,8 @@ export class ItemsPanel extends Phaser.GameObjects.Container {
             {
                 itemKey: 'itempage_item5',
                 itemSelectKey: 'itempage_item5_select',
-                itemDescriptionKey: 'game5_object_description'
+                itemDescriptionKey: 'game6_object_description',
+                gameId: 6
             }
         ];
 
@@ -307,7 +308,7 @@ export class ItemsPanel extends Phaser.GameObjects.Container {
             const slot = orderedSlots[index];
             if (!slot) return;
 
-            const gameId = index + 1;
+            const gameId = item.gameId || index + 1;
             const isUnlocked = allResults.find(r => r.game === gameId)?.isFinished;
             if (!isUnlocked) return;
 

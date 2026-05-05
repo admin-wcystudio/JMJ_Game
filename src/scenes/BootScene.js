@@ -78,8 +78,7 @@ export class BootScene extends Phaser.Scene {
             'game4_object_description',
             'itempage_item5',
             'itempage_item5_select',
-            'game5_object_description',
-
+            'game6_object_description',
             'itempage_item_box',
             'itempage_bg',
             'itempage_panel_bg',

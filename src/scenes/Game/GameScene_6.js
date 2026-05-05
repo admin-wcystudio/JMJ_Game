@@ -151,7 +151,7 @@ export class GameScene_6 extends BaseGameScene {
         this.border1_correctObjects = [2];
         this.border2_correctObjects = [1];
         this.border3_correctObjects = [3];
-        this.drawDebug();
+        //  this.drawDebug();
 
     }
 
@@ -265,6 +265,8 @@ export class GameScene_6 extends BaseGameScene {
         if (border1Correct && border2Correct && border3Correct) {
             console.log('[ANSWER] ✓ All objects correctly placed in all borders!');
             this.onRoundWin();
+            console.log(this.gameState);
+
         } else {
             console.log('[ANSWER] ✗ Incorrect placement!');
             this.handleLose();
@@ -287,7 +289,6 @@ export class GameScene_6 extends BaseGameScene {
         this.updateRoundUI(false);
         this.showBubble('tryagain');
 
-
     }
 
     resetForNewRound() {
@@ -303,6 +304,7 @@ export class GameScene_6 extends BaseGameScene {
     }
 
     onWinBubbleClose() {
+        GameManager.saveGameResult(6, true, this.totalUsedSeconds);
 
         this.objects.forEach(obj => obj.setVisible(false));
         if (this.confirmBtn) this.confirmBtn.setVisible(false);
@@ -334,7 +336,7 @@ export class GameScene_6 extends BaseGameScene {
 
     showObjectPanel() {
         const objectPanel = new CustomPanel(this, 960, 600, [{
-            content: 'game5_object_description',
+            content: 'game6_object_description',
             closeBtn: 'close_btn',
             closeBtnClick: 'close_btn_click'
         }]);
