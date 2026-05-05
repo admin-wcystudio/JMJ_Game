@@ -100,18 +100,14 @@ export class GameScene_4 extends BaseGameScene {
         // Player start position
         this.playerStartX = this.centerX;
         this.playerStartY = 800;
-        console.log('Player start position:', this.playerStartX, this.playerStartY);
-
 
         this.initGame('game4_bg', 'game4_description', true, false, {
             targetRounds: 3,
-            roundPerSeconds: 60000,
-            isAllowRoundFail: true,
+            roundPerSeconds: 60,
+            isAllowRoundFail: false,
             isContinuousTimer: true,
             sceneIndex: 4
         });
-
-        //  this.gameUI.descriptionPanel.setVisible(false);
 
         // Direction buttons
         this.leftBtn = new CustomButton(this, 1500, 950, 'left_btn', 'left_btn_click', () => {
@@ -148,7 +144,7 @@ export class GameScene_4 extends BaseGameScene {
         this.maxFailObjects = 9;
         this.maxSuccessObjects = 9;
         this.collectedSuccessObjects = 0;
-        this.lives = 3;
+        this.collectedFailObjects = 0;
         this.placeFailObjects();
         this.placeSuccessObjects();
 
@@ -195,7 +191,7 @@ export class GameScene_4 extends BaseGameScene {
         this.createWall(400, 320, 150, 100, debugVisible, true);
         this.createWall(450, 420, 280, 100, debugVisible, true);
 
-        this.createWall(1100, 850, 180, 120, debugVisible, true);
+        this.createWall(1090, 850, 160, 120, debugVisible, true);
         this.createWall(1820, 780, 150, 120, debugVisible, true);
         this.createWall(1870, 350, 100, 980, debugVisible, true);
         this.createWall(900, 560, 140, 180, debugVisible, true);
@@ -293,16 +289,6 @@ export class GameScene_4 extends BaseGameScene {
             }
         }
 
-        // if (this.debugCollider && this.debugGraphics) {
-        //     this.debugGraphics.clear();
-        //     // Red when colliding, cyan when free
-        //     this.debugGraphics.lineStyle(2, colliding ? 0xff0000 : 0x00ffff, 1);
-        //     this.debugGraphics.strokeRect(playerRect.x, playerRect.y, playerRect.width, playerRect.height);
-        //     // Show coin collection radius in yellow
-        //     this.debugGraphics.lineStyle(1, 0xffff00, 0.6);
-        //     this.debugGraphics.strokeCircle(x, y, 80);
-        // }
-
         return colliding;
     }
 
@@ -314,8 +300,12 @@ export class GameScene_4 extends BaseGameScene {
             const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, failObj.x, failObj.y);
             if (dist < hitRadius) {
                 failObj.setVisible(false);
-                this.lives--;
-                console.log(`[GameScene_4] Fail object hit! Lives: ${this.lives}`);
+                this.collectedFailObjects++;
+                console.log(`[GameScene_4] Fail object hit! Fails: ${this.collectedFailObjects}`);
+
+                // Update the round UI indicator based on total objects collected
+                this.roundIndex = this.collectedSuccessObjects + this.collectedFailObjects - 1;
+
                 this.handleLose();
                 return;
             }
@@ -332,10 +322,15 @@ export class GameScene_4 extends BaseGameScene {
                 successObj.setVisible(false);
                 this.collectedSuccessObjects++;
                 console.log(`[GameScene_4] Success object collected! (${this.collectedSuccessObjects}/3)`);
-                if (this.collectedSuccessObjects >= 3) {
-                    console.log('[GameScene_4] 3 success objects collected! You win!');
+
+                // Update the round UI indicator based on total objects collected
+                this.roundIndex = this.collectedSuccessObjects + this.collectedFailObjects - 1;
+                this.updateRoundUI(true);
+
+                if (this.collectedSuccessObjects >= this.targetRounds) {
                     this.onRoundWin();
                 }
+
                 return;
             }
         }
@@ -346,11 +341,9 @@ export class GameScene_4 extends BaseGameScene {
         const failObjectPositions = [
             { x: 250, y: 330 },
             { x: 100, y: 500 },
-            { x: 600, y: 350 },
             { x: 780, y: 600 },
             { x: 850, y: 280 },
-            { x: 1200, y: 380 },
-            { x: 1200, y: 580 },
+            { x: 1200, y: 560 },
             { x: 1450, y: 450 },
             { x: 1780, y: 650 },
         ];
@@ -423,8 +416,17 @@ export class GameScene_4 extends BaseGameScene {
 
     resetForNewRound() {
         this.isMoving = false;
-        this.lives = 3;
+        this.collectedFailObjects = 0;
         this.collectedSuccessObjects = 0;
+        this.roundIndex = 0; // Reset index to 0 since we reset the board
+
+        // Reset round UI icons back to initial state
+        if (this.gameUI?.roundStates) {
+            this.gameUI.roundStates.forEach(state => {
+                state.content.setTexture('game_gamechance');
+                state.isSuccess = null;
+            });
+        }
 
         if (this.player) {
             this.player.x = this.playerStartX;
@@ -446,7 +448,19 @@ export class GameScene_4 extends BaseGameScene {
 
     }
 
-    showWin() {
+    onRoundWin() {
+        if (!this.isGameActive || this.gameState === 'gameWin') return;
+
+        this.gameState = 'gameWin';
+        this.gameTimer.stop();
+        this._calculateTiming(true);
+        this.enableGameInteraction(false);
+        this.showFeedbackLabel(true);
+        this.showBubble('win');
+    }
+
+    onWinBubbleClose() {
+        GameManager.saveGameResult(4, true, this.totalUsedSeconds);
         this.showObjectPanel();
     }
 
