@@ -71,6 +71,10 @@ export class MainStreetScene extends Phaser.Scene {
         this.load.image('stage1', 'assets/images/MainStreet/stage1.png');
         this.load.image('stage2', 'assets/images/MainStreet/stage2.png');
         this.load.image('stage3', 'assets/images/MainStreet/stage3.png');
+
+        for (let i = 1; i <= 5; i++) {
+            this.load.image(`object${i}`, `assets/images/MainStreet/object${i}.png`);
+        }
         this.load.image('gameintro_01', 'assets/images/MainStreet/gameintro.png');
         this.load.image('gametimer', 'assets/images/MainStreet/gameintro_timer.png');
 
@@ -164,11 +168,13 @@ export class MainStreetScene extends Phaser.Scene {
         this.genderKey = gender === 'M' ? 'boy' : 'girl';
         const genderKey = this.genderKey;
 
-
+        this.minXClamp = 600;
+        this.maxXClamp = 4300;
 
         console.log(`Player gender: ${gender}, genderKey: ${genderKey}`);
 
         const bgKeys = ['stage1', 'stage2', 'stage3'];
+
         let currentX = 0;
         //background
         bgKeys.forEach((key, index) => {
@@ -176,8 +182,23 @@ export class MainStreetScene extends Phaser.Scene {
             currentX += bg.width;
         });
 
+        // 判斷關卡1與關卡2是否完成
+        const game1Result = GameManager.loadOneGameResult(1);
+        const game2Result = GameManager.loadOneGameResult(2);
+        const isGame1And2Finished = (game1Result && game1Result.isFinished) && (game2Result && game2Result.isFinished);
+
+        if (isGame1And2Finished) {
+            this.minXClamp = 600;
+            this.maxXClamp = 4300;
+            console.log("Game 1 and 2 finished. Using triggeredBackgroundSettings.");
+        } else {
+            this.minXClamp = 2200;
+            this.maxXClamp = 4300;
+            console.log("Game 1 or 2 not finished. Using defaultBackgroundSettings.");
+        }
+
         // 設定相機邊界為總長度 8414px
-        this.cameras.main.setBounds(0, 0, 4100, 1080);
+        this.cameras.main.setBounds(0, 0, 4400, 1080);
 
         const introPage = [
             {
@@ -239,18 +260,18 @@ export class MainStreetScene extends Phaser.Scene {
         // NPCs (trigger game)
         this.interactiveNpcs = [];
 
-        const n1 = NpcHelper.createNpc(this, 1, 380, 550, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
-        const n2 = NpcHelper.createNpc(this, 2, 1180, 550, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
-        const n3 = NpcHelper.createNpc(this, 3, 1780, 550, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
-        const n4 = NpcHelper.createNpc(this, 4, 2680, 550, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim');
-        const n5 = NpcHelper.createNpc(this, 5, 3500, 750, 1, 'npc5', npc5_bubbles, 15, 'npc5_anim');
+        // const n1 = NpcHelper.createNpc(this, 1, 380, 550, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
+        // const n2 = NpcHelper.createNpc(this, 2, 1180, 550, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
+        // const n3 = NpcHelper.createNpc(this, 3, 1780, 550, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
+        // const n4 = NpcHelper.createNpc(this, 4, 2680, 550, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim');
+        // const n5 = NpcHelper.createNpc(this, 5, 3500, 750, 1, 'npc5', npc5_bubbles, 15, 'npc5_anim');
 
 
-        this.interactiveNpcs.push(n1);
-        this.interactiveNpcs.push(n2);
-        this.interactiveNpcs.push(n3);
-        this.interactiveNpcs.push(n4);
-        this.interactiveNpcs.push(n5);
+        // this.interactiveNpcs.push(n1);
+        // this.interactiveNpcs.push(n2);
+        // this.interactiveNpcs.push(n3);
+        // this.interactiveNpcs.push(n4);
+        // this.interactiveNpcs.push(n5);
 
 
         this.currentInteractiveNpc = null;
@@ -273,12 +294,13 @@ export class MainStreetScene extends Phaser.Scene {
             });
         });
 
-        const playerPos = localStorage.getItem('playerPosition') ? JSON.parse(localStorage.getItem('playerPosition')) : { x: 800, y: 550 };
+        const playerPos = localStorage.getItem('playerPosition') ? JSON.parse(localStorage.getItem('playerPosition')) :
+            { x: 3500, y: 730 };
         this.playerPos = playerPos;
 
         // Start player at saved position (clamped to camera bounds)
-        const startX = Phaser.Math.Clamp(this.playerPos.x ?? 800, 600, 3800);
-        const startY = this.playerPos.y ?? 600;
+        const startX = Phaser.Math.Clamp(this.playerPos.x ?? 3500, this.minXClamp, this.maxXClamp);
+        const startY = this.playerPos.y ?? 730;
 
         this.playerSprite = this.add.sprite(startX, startY,
             `${genderKey}_idle`).setDepth(14).setScale(2);
@@ -309,7 +331,7 @@ export class MainStreetScene extends Phaser.Scene {
         }
         this.playerSprite.lastDirectionLeft = isLeft;
 
-        this.playerSprite.x = Phaser.Math.Clamp(this.playerSprite.x, 600, 3800);
+        this.playerSprite.x = Phaser.Math.Clamp(this.playerSprite.x, this.minXClamp, this.maxXClamp);
 
 
         const allNpcs = [...this.interactiveNpcs];
