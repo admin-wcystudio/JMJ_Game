@@ -67,16 +67,16 @@ export class GameScene_5 extends BaseGameScene {
         this.matchedPairs = 0;
         // 5 pairs = 10 cards (2 rows of 5)
         this.spawnPos = [
-            { x: centerX - 400, y: centerY - 150 },
-            { x: centerX - 200, y: centerY - 150 },
-            { x: centerX, y: centerY - 150 },
-            { x: centerX + 200, y: centerY - 150 },
-            { x: centerX + 400, y: centerY - 150 },
-            { x: centerX - 400, y: centerY + 150 },
-            { x: centerX - 200, y: centerY + 150 },
-            { x: centerX, y: centerY + 150 },
-            { x: centerX + 200, y: centerY + 150 },
-            { x: centerX + 400, y: centerY + 150 }
+            { x: centerX - 500, y: centerY - 200 },
+            { x: centerX - 250, y: centerY - 200 },
+            { x: centerX, y: centerY - 200 },
+            { x: centerX + 250, y: centerY - 200 },
+            { x: centerX + 500, y: centerY - 200 },
+            { x: centerX - 500, y: centerY + 100 },
+            { x: centerX - 250, y: centerY + 100 },
+            { x: centerX, y: centerY + 100 },
+            { x: centerX + 250, y: centerY + 100 },
+            { x: centerX + 500, y: centerY + 100 }
         ];
         this.card = [];
 
@@ -90,18 +90,17 @@ export class GameScene_5 extends BaseGameScene {
             sceneIndex: 5
         });
 
-        this.gameUI.descriptionPanel.setVisible(false);
 
     }
 
     setupGameObjects() {
 
-        const cardBackKey = 'game5_select_card';
+        const cardBackKey = 'game5_card';
         const cardBackSelectedKey = 'game5_card_select';
 
         const cardTypes = [
-            'game5_card1a', 'game5_card1b', 'game5_card1c', 'game5_card1d', 'game5_card1e',
-            'game5_card2a', 'game5_card2b', 'game5_card2c', 'game5_card2d', 'game5_card2e'
+            'game5_card1a', 'game5_card2a', 'game5_card2d', 'game5_card1c', 'game5_card2e',
+            'game5_card2c', 'game5_card1d', 'game5_card1b', 'game5_card2b', 'game5_card1e'
         ];
         const positions = this.spawnPos;
 
@@ -125,7 +124,7 @@ export class GameScene_5 extends BaseGameScene {
             // Card front (hidden initially) - scale to match card back size
             const cardFront = this.add.image(0, 0, cardType)
                 .setVisible(false)
-                .setScale(0.55);
+                .setScale(0.6);
 
             card.add([cardBack, cardFront]);
 
@@ -192,9 +191,9 @@ export class GameScene_5 extends BaseGameScene {
     checkMatch() {
         const [card1, card2] = this.flippedCards;
 
-        // Extract pair number (e.g., "game5_normalcard1_img" and "game5_normalcard1_text" are a match)
-        const type1 = card1.cardType.replace(/_(img|text)$/, '');
-        const type2 = card2.cardType.replace(/_(img|text)$/, '');
+        // Extract pair identifier (e.g., "game5_card1a" and "game5_card2a" both end with "a")
+        const type1 = card1.cardType.slice(-1);
+        const type2 = card2.cardType.slice(-1);
 
         if (type1 === type2) {
             // Match found!
@@ -285,13 +284,18 @@ export class GameScene_5 extends BaseGameScene {
 
         console.log(`Game won!`);
 
-        this.winPreview.setInteractive({ useHandCursor: true }).setScale(1.1)
+        this.winPreview = this.add.image(960, 540, 'game5_success_preview')
+            .setDepth(600).setScale(1.3);
+
+        this.winPreview.setInteractive({ useHandCursor: true }).setScale(1.3)
             .on('pointerdown', () => {
                 this.winPreview.destroy();
-                this.showBubble('win', this.playerGender);
+                this.showBubble('win');
             });
-
     }
+
+
+
     showFailPanel() {
         const popupPanel = new CustomFailPanel(this, 960, 540, () => {
             popupPanel.destroy();

@@ -332,6 +332,7 @@ export default class BaseGameScene extends Phaser.Scene {
                 this.showWin();
                 this.isGameActive = false;
                 this.gameState = 'completed';
+                GameManager.backToMainStreet(this);
                 if (typeof this.onGameWin === 'function') this.onGameWin();
             }
         }
