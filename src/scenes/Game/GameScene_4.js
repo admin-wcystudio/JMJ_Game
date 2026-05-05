@@ -100,15 +100,18 @@ export class GameScene_4 extends BaseGameScene {
         // Player start position
         this.playerStartX = this.centerX + 50;
         this.playerStartY = 800;
+        console.log('Player start position:', this.playerStartX, this.playerStartY);
 
 
-        this.initGame('game4_bg', 'game4_description', false, false, {
+        this.initGame('game4_bg', 'game4_description', true, false, {
             targetRounds: 3,
-            roundPerSeconds: 60,
+            roundPerSeconds: 60000,
             isAllowRoundFail: true,
             isContinuousTimer: true,
             sceneIndex: 4
         });
+
+        this.gameUI.descriptionPanel.setVisible(false);
 
         // Direction buttons
         this.leftBtn = new CustomButton(this, 1500, 950, 'left_btn', 'left_btn_click', () => {
@@ -151,7 +154,7 @@ export class GameScene_4 extends BaseGameScene {
     createWallColliders() {
         this.wallRects = [];
 
-        const debugVisible = false;
+        const debugVisible = true;
         // Outer boundary walls
         this.createWall(this.centerX, 160, 2300, 210, debugVisible, true);
         this.createWall(this.centerX + 480, 250, 800, 150, debugVisible, true);
@@ -162,9 +165,9 @@ export class GameScene_4 extends BaseGameScene {
         this.createWall(800, 450, 290, 190, debugVisible, true);
         this.createWall(this.centerX - 520, this.centerY + 130, 280, 250, debugVisible, true);
         this.createWall(this.centerX - 430, this.centerY + 90, 400, 140, debugVisible, true);
-        this.createWall(this.centerX - 150, this.centerY + 330, 320, 150, debugVisible, true);
+        this.createWall(this.centerX - 180, this.centerY + 330, 250, 150, debugVisible, true);
         this.createWall(1000, 680, 320, 60, debugVisible, true);
-        this.createWall(1050, 500, 750, 100, debugVisible, true);
+        this.createWall(1050, 500, 750, 120, debugVisible, true);
         // Top-left / right grass/tree area
         this.createWall(100, 350, 250, 180, debugVisible, true);
         // Left side vertical grass path
@@ -201,7 +204,7 @@ export class GameScene_4 extends BaseGameScene {
 
 
     moveDirection(direction) {
-        if (this.isMoving || !this.isGameActive) return;
+        //  if (this.isMoving || !this.isGameActive) return;
 
         let targetX = this.player.x;
         let targetY = this.player.y;
@@ -448,7 +451,7 @@ export class GameScene_4 extends BaseGameScene {
         // Boy animations
         this.anims.create({
             key: 'boy_backstop_anim',
-            frames: this.anims.generateFrameNumbers('boy_backstop', { start: 0, end: 66 }),
+            frames: this.anims.generateFrameNumbers('boy_backstop', { start: 0, end: 47 }),
             frameRate: 30,
             repeat: -1
         });
@@ -460,19 +463,19 @@ export class GameScene_4 extends BaseGameScene {
         });
         this.anims.create({
             key: 'boy_frontstop_anim',
-            frames: this.anims.generateFrameNumbers('boy_frontstop', { start: 0, end: 66 }),
+            frames: this.anims.generateFrameNumbers('boy_frontstop', { start: 0, end: 47 }),
             frameRate: 30,
             repeat: -1
         });
         this.anims.create({
             key: 'boy_frontwalking_anim',
-            frames: this.anims.generateFrameNumbers('boy_frontwalking', { start: 0, end: 66 }),
+            frames: this.anims.generateFrameNumbers('boy_frontwalking', { start: 0, end: 47 }),
             frameRate: 30,
             repeat: -1
         });
         this.anims.create({
             key: 'boy_leftstop_anim',
-            frames: this.anims.generateFrameNumbers('boy_leftstop', { start: 0, end: 66 }),
+            frames: this.anims.generateFrameNumbers('boy_leftstop', { start: 0, end: 47 }),
             frameRate: 30,
             repeat: -1
         });
@@ -484,7 +487,7 @@ export class GameScene_4 extends BaseGameScene {
         });
         this.anims.create({
             key: 'boy_rightstop_anim',
-            frames: this.anims.generateFrameNumbers('boy_rightstop', { start: 0, end: 66 }),
+            frames: this.anims.generateFrameNumbers('boy_rightstop', { start: 0, end: 47 }),
             frameRate: 30,
             repeat: -1
         });
