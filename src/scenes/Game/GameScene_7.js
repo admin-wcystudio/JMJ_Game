@@ -72,8 +72,7 @@ export class GameScene_7 extends BaseGameScene {
             sceneIndex: 7
         });
 
-        this.gameUI.descriptionPanel.setVisible(false);
-        this.setupGameObjects();
+        this.gameUI.descriptionPanel.setVisible(false);;
 
     }
 
@@ -83,29 +82,38 @@ export class GameScene_7 extends BaseGameScene {
         this.targetContents = [
             {
                 key: 'game7_answer1', fillKey: 'game7_fill_answer1'
-                , position: { x: this.centerX - 75, y: this.centerY - 250 }
+                , position: { x: 970, y: 420 }
             },
             {
-                key: 'game7_answer5', fillKey: 'game7_fill_answer5',
-                position: { x: this.centerX - 100, y: this.centerY - 100 }
-            },
-            {
-                key: 'game7_answer4', fillKey: 'game7_fill_answer4', position:
-                    { x: this.centerX + 60, y: this.centerY + 80 }
-            },
-            {
-                key: 'game7_answer6', fillKey: 'game7_fill_answer6', position:
-                    { x: this.centerX + 410, y: this.centerY - 100 }
+                key: 'game7_answer2', fillKey: 'game7_fill_answer2',
+                position: { x: 931, y: 510 }
             },
             {
                 key: 'game7_answer3', fillKey: 'game7_fill_answer3', position:
-                    { x: this.centerX + 200, y: this.centerY + 175 }
+                    { x: 1210, y: 510 }
             },
             {
-                key: 'game7_answer2', fillKey: 'game7_fill_answer2', position:
-                    { x: this.centerX + 500, y: this.centerY + 175 }
+                key: 'game7_answer4', fillKey: 'game7_fill_answer4', position:
+                    { x: 690, y: 610 }
+            },
+            {
+                key: 'game7_answer5', fillKey: 'game7_fill_answer5', position:
+                    { x: 1140, y: 610 }
+            },
+            {
+                key: 'game7_answer6', fillKey: 'game7_fill_answer6', position:
+                    { x: 1275, y: 705 }
             },
         ];
+
+        // --- Debug Graphics for Positions --- 
+
+        // const debugGraphics = this.add.graphics().setDepth(999);
+        // this.targetContents.forEach(tc => {
+        //     // Draw a red dot directly on the (x, y) coordinate
+        //     debugGraphics.fillStyle(0xff0000, 0.8);
+        //     debugGraphics.fillCircle(tc.position.x, tc.position.y, 10);
+        // });
 
         // --- 1. Create fill slots – select_area indicator only, hidden by default, no hint texture ---
         this.fillSlots = this.targetContents.map(tc => {
@@ -122,7 +130,8 @@ export class GameScene_7 extends BaseGameScene {
         });
 
         // --- 2. Randomize spawn positions and create draggable answer keys ---
-        const answerKeys = ['game7_answer1', 'game7_answer2', 'game7_answer3', 'game7_answer4', 'game7_answer5', 'game7_answer6'];
+        const answerKeys = ['game7_answer1', 'game7_answer2',
+            'game7_answer3', 'game7_answer4', 'game7_answer5', 'game7_answer6'];
         const shuffledPositions = Phaser.Utils.Array.Shuffle([...this.spawnPositions]);
 
         this.answerKeyObjects = [];
