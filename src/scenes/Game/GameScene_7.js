@@ -72,8 +72,6 @@ export class GameScene_7 extends BaseGameScene {
             sceneIndex: 7
         });
 
-        this.gameUI.descriptionPanel.setVisible(false);;
-
     }
 
     setupGameObjects() {
@@ -306,11 +304,40 @@ export class GameScene_7 extends BaseGameScene {
         this.showBubble('win', this.playerGender);
     }
     onWinBubbleClose() {
+
         GameManager.saveGameResult(7, true, this.totalUsedSeconds);
-        this.playSuccessVideoFeedback();
+        this.content.setVisible(false);
+        this.answerKeyObjects.forEach(img => img.setVisible(false));
+        this.fillSlots.forEach(slot => slot.selectArea.setVisible(false));
+
+        this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game7_npc_box_win_2')
+            .setDepth(100).setInteractive({ useHandCursor: true });
+        this.otherDialog.on('pointerdown', () => {
+            this.otherDialog.destroy();
+            this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game7_npc_box_win_3')
+                .setDepth(100).setInteractive({ useHandCursor: true });
+            this.otherDialog.on('pointerdown', () => {
+                this.otherDialog.destroy();
+                this.playSuccessVideoFeedback();
+            });
+        });
+
     }
 
     playSuccessVideoFeedback() {
+
+        // Hide UI elements
+        if (this.gameUI && this.gameUI.roundStates) {
+            this.gameUI.roundStates.forEach(state => state.content.setVisible(false));
+        }
+        if (this.gameTimer) {
+            if (this.gameTimer.timerBg) this.gameTimer.timerBg.setVisible(false);
+            if (this.gameTimer.timerText) this.gameTimer.timerText.setVisible(false);
+        }
+        if (this.feedbackLabel) {
+            this.feedbackLabel.setVisible(false);
+        }
+
         this.video = this.add.video(this.centerX, this.centerY, `success_video`).setDepth(100);
         this.video.play(true);
 
@@ -325,7 +352,7 @@ export class GameScene_7 extends BaseGameScene {
             this.showFinalPanel();
         });
 
-        this.time.delayedCall(2000, () => {
+        this.time.delayedCall(5000, () => {
             this.descriptionPanel.show();
         });
     }
