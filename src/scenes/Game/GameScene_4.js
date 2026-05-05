@@ -98,7 +98,7 @@ export class GameScene_4 extends BaseGameScene {
         this.isMoving = false;
 
         // Player start position
-        this.playerStartX = this.centerX + 50;
+        this.playerStartX = this.centerX;
         this.playerStartY = 800;
         console.log('Player start position:', this.playerStartX, this.playerStartY);
 
@@ -111,7 +111,7 @@ export class GameScene_4 extends BaseGameScene {
             sceneIndex: 4
         });
 
-        this.gameUI.descriptionPanel.setVisible(false);
+        //  this.gameUI.descriptionPanel.setVisible(false);
 
         // Direction buttons
         this.leftBtn = new CustomButton(this, 1500, 950, 'left_btn', 'left_btn_click', () => {
@@ -143,6 +143,15 @@ export class GameScene_4 extends BaseGameScene {
         this.player = this.add.sprite(this.playerStartX, this.playerStartY, `${this.genderKey}_${idleKey}`)
             .setOrigin(0.5, 0.5).setDepth(2).setScale(2);
 
+        this.failObjects = [];
+        this.successObjects = [];
+        this.maxFailObjects = 9;
+        this.maxSuccessObjects = 9;
+        this.collectedSuccessObjects = 0;
+        this.lives = 3;
+        this.placeFailObjects();
+        this.placeSuccessObjects();
+
         this.createWallColliders();
 
         // Debug: visualize player collision box (set to false to hide)
@@ -151,10 +160,18 @@ export class GameScene_4 extends BaseGameScene {
 
     }
 
+    update(time, delta) {
+        if (!this.isGameActive) return;
+        super.update(time, delta);
+
+        this.checkFailCollision();
+        this.checkSuccessCollection();
+    }
+
     createWallColliders() {
         this.wallRects = [];
 
-        const debugVisible = true;
+        const debugVisible = false;
         // Outer boundary walls
         this.createWall(this.centerX, 160, 2300, 210, debugVisible, true);
         this.createWall(this.centerX + 480, 250, 800, 150, debugVisible, true);
@@ -178,7 +195,7 @@ export class GameScene_4 extends BaseGameScene {
         this.createWall(400, 320, 150, 100, debugVisible, true);
         this.createWall(450, 420, 280, 100, debugVisible, true);
 
-        this.createWall(1120, 850, 120, 120, debugVisible, true);
+        this.createWall(1100, 850, 180, 120, debugVisible, true);
         this.createWall(1820, 780, 150, 120, debugVisible, true);
         this.createWall(1870, 350, 100, 980, debugVisible, true);
         this.createWall(900, 560, 140, 180, debugVisible, true);
@@ -204,7 +221,7 @@ export class GameScene_4 extends BaseGameScene {
 
 
     moveDirection(direction) {
-        //  if (this.isMoving || !this.isGameActive) return;
+        if (this.isMoving || !this.isGameActive) return;
 
         let targetX = this.player.x;
         let targetY = this.player.y;
