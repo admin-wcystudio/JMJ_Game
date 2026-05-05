@@ -13,41 +13,45 @@ export class GameScene_5 extends BaseGameScene {
 
         const path = 'assets/images/Game_5/';
 
-        this.load.image('game5_npc_box_mainstreet', `${path}game5_npc_box1.png`);
-        this.load.image('game5_npc_box_win', `${path}game5_npc_box2.png`);
-        this.load.image('game5_npc_box_tryagain', `${path}game5_npc_box3.png`);
 
-        this.load.image('game5_normal_button', `${path}game5_normal_button.png`);
-        this.load.image('game5_normal_button_click', `${path}game5_normal_button_select.png`);
-        this.load.image('game5_hard_button', `${path}game5_hard_button.png`);
-        this.load.image('game5_hard_button_click', `${path}game5_hard_button_select.png`);
-        this.load.image('game5_mode_panel', `${path}game5_hardnormal_box.png`);
+        this.gender = 'F';
+        if (localStorage.getItem('player')) {
+            this.gender = JSON.parse(localStorage.getItem('player')).gender;
+        }
 
-        this.load.image('game5_object_description', `${path}game5_object_description1.png`);
-        this.load.image('game5_object_description1', `${path}game5_object_description1.png`);
-        this.load.image('game5_object_description2', `${path}game5_object_description2.png`);
+        this.load.image('game5_npc_box_mainstreet_fail_01', `${path}game5_npc_box1.png`);
+        this.load.image('game5_npc_box_mainstreet_fail_02', `${path}game5_npc_box1.png`);
+
+        if (this.gender === 'M') {
+            this.load.image('game5_npc_box_mainstreet_01', `${path}game5_npc_box3_boy.png`);
+            this.load.image('game5_npc_box_mainstreet_02', `${path}game5_npc_box4_boy.png`);
+        } else {
+            this.load.image('game5_npc_box_mainstreet_01', `${path}game5_npc_box3_girl.png`);
+            this.load.image('game5_npc_box_mainstreet_02', `${path}game5_npc_box4_girl.png`);
+        }
+
+        this.load.image('game5_npc_box_mainstreet_03', `${path}game5_npc_box5.png`);
+        this.load.image('game5_npc_box_mainstreet_04', `${path}game5_npc_box6.png`);
+
+
+        this.load.image('game5_npc_box_win', `${path}game5_npc_box7.png`);
+        this.load.image('game5_npc_box_tryagain', `${path}game5_npc_box8.png`);
 
         //normal version
-        const normalPath = 'assets/images/Game_5/normalversion/';
-        this.load.image('game5_normal_success_preview', `${normalPath}game5_normal_success_preview.png`);
-        this.load.image('game5_normalcard_back', `${normalPath}game5_normalcard_cover.png`);
+        this.load.image('game5_success_preview', `${path}game5_success_preview.png`);
 
-        for (let i = 1; i <= 7; i++) {
-            this.load.image(`game5_normalcard${i}_img`, `${normalPath}game5_normalcard${i}_large_img.png`);
-            this.load.image(`game5_normalcard${i}_text`, `${normalPath}game5_normalcard${i}_large_text.png`);
+        for (let i = 1; i <= 2; i++) {
+            this.load.image(`game5_card${i}a`, `${path}game5_card${i}a.png`);
+            this.load.image(`game5_card${i}b`, `${path}game5_card${i}b.png`);
+            this.load.image(`game5_card${i}c`, `${path}game5_card${i}c.png`);
+            this.load.image(`game5_card${i}d`, `${path}game5_card${i}d.png`);
+            this.load.image(`game5_card${i}e`, `${path}game5_card${i}e.png`);
         }
 
-        const hardPath = 'assets/images/Game_5/hardversion/';
-        this.load.image('game5_hard_success_preview', `${hardPath}game5_hard_success_preview.png`);
-        this.load.image('game5_hardcard_back', `${hardPath}game5_hardcard_cover.png`);
-
-        for (let i = 1; i <= 12; i++) {
-            this.load.image(`game5_hardcard${i}_img`, `${hardPath}game5_hardcard${i}_large_img.png`);
-            this.load.image(`game5_hardcard${i}_text`, `${hardPath}game5_hardcard${i}_large_text.png`);
-        }
+        this.load.image(`game5_card`, `${path}game5_card.png`);
+        this.load.image(`game5_card_select`, `${path}game5_card_select.png`);
 
     }
-
     create() {
         this.centerX = this.cameras.main.width / 2;
         this.centerY = this.cameras.main.height / 2 + 100;
@@ -56,99 +60,26 @@ export class GameScene_5 extends BaseGameScene {
         const centerY = this.centerY;
 
         this.isNormalMode = true;
-        this.isSetMode = false;
         this.isChecked = false;
 
         this.cards = [];
         this.flippedCards = [];
         this.matchedPairs = 0;
-        // Normal mode: 7 pairs = 14 cards (2 rows of 7)
-        this.spawnCardPositions_normal = [
-            { x: centerX - 600, y: centerY - 150 },
+        // 5 pairs = 10 cards (2 rows of 5)
+        this.spawnPos = [
             { x: centerX - 400, y: centerY - 150 },
             { x: centerX - 200, y: centerY - 150 },
             { x: centerX, y: centerY - 150 },
             { x: centerX + 200, y: centerY - 150 },
             { x: centerX + 400, y: centerY - 150 },
-            { x: centerX + 600, y: centerY - 150 },
-            { x: centerX - 600, y: centerY + 150 },
             { x: centerX - 400, y: centerY + 150 },
             { x: centerX - 200, y: centerY + 150 },
             { x: centerX, y: centerY + 150 },
             { x: centerX + 200, y: centerY + 150 },
-            { x: centerX + 400, y: centerY + 150 },
-            { x: centerX + 600, y: centerY + 150 }
+            { x: centerX + 400, y: centerY + 150 }
         ];
-        this.cardTypes_normal = [
-            'game5_normalcard2_img',  // position 1
-            'game5_normalcard4_img',  // position 2
-            'game5_normalcard1_img',  // position 3
-            'game5_normalcard1_text', // position 4
-            'game5_normalcard6_img',  // position 5
-            'game5_normalcard4_text', // position 6
-            'game5_normalcard7_text', // position 7
-            'game5_normalcard5_text', // position 8
-            'game5_normalcard2_text', // position 9
-            'game5_normalcard7_img',  // position 10
-            'game5_normalcard3_text', // position 11
-            'game5_normalcard3_img',  // position 12
-            'game5_normalcard6_text', // position 13
-            'game5_normalcard5_img',  // position 14
-        ];
+        this.card = [];
 
-        // Hard mode: 12 pairs = 24 cards (3 rows of 8, 200px col / 230px row spacing)
-        this.spawnCardPositions_hard = [
-            { x: centerX - 700, y: centerY - 230 },
-            { x: centerX - 500, y: centerY - 230 },
-            { x: centerX - 300, y: centerY - 230 },
-            { x: centerX - 100, y: centerY - 230 },
-            { x: centerX + 100, y: centerY - 230 },
-            { x: centerX + 300, y: centerY - 230 },
-            { x: centerX + 500, y: centerY - 230 },
-            { x: centerX + 700, y: centerY - 230 },
-            { x: centerX - 700, y: centerY },
-            { x: centerX - 500, y: centerY },
-            { x: centerX - 300, y: centerY },
-            { x: centerX - 100, y: centerY },
-            { x: centerX + 100, y: centerY },
-            { x: centerX + 300, y: centerY },
-            { x: centerX + 500, y: centerY },
-            { x: centerX + 700, y: centerY },
-            { x: centerX - 700, y: centerY + 230 },
-            { x: centerX - 500, y: centerY + 230 },
-            { x: centerX - 300, y: centerY + 230 },
-            { x: centerX - 100, y: centerY + 230 },
-            { x: centerX + 100, y: centerY + 230 },
-            { x: centerX + 300, y: centerY + 230 },
-            { x: centerX + 500, y: centerY + 230 },
-            { x: centerX + 700, y: centerY + 230 }
-        ];
-        this.cardTypes_hard = [
-            'game5_hardcard12_text', // position 1
-            'game5_hardcard9_img',   // position 2
-            'game5_hardcard8_img',   // position 3
-            'game5_hardcard12_img',  // position 4
-            'game5_hardcard2_img',   // position 5
-            'game5_hardcard6_text',  // position 6
-            'game5_hardcard9_text',  // position 7
-            'game5_hardcard7_text',  // position 8
-            'game5_hardcard11_img',  // position 9
-            'game5_hardcard1_img',   // position 10
-            'game5_hardcard10_text', // position 11
-            'game5_hardcard2_text',  // position 12
-            'game5_hardcard11_text', // position 13
-            'game5_hardcard5_img',   // position 14
-            'game5_hardcard3_text',  // position 15
-            'game5_hardcard4_text',  // position 16
-            'game5_hardcard5_text',  // position 17
-            'game5_hardcard8_text',  // position 18
-            'game5_hardcard6_img',   // position 19
-            'game5_hardcard1_text',  // position 20
-            'game5_hardcard4_img',   // position 21
-            'game5_hardcard7_img',   // position 22
-            'game5_hardcard3_img',   // position 23
-            'game5_hardcard10_img',  // position 24
-        ];
 
         // Now call initGame which will call setupGameObjects
         this.initGame('game5_bg', 'game5_description', true, false, {
@@ -159,21 +90,26 @@ export class GameScene_5 extends BaseGameScene {
             sceneIndex: 5
         });
 
-        this.gameUI.descriptionPanel?.setCloseCallBack(() => {
-            this.showChooseModePanel();
-        });
+        this.gameUI.descriptionPanel.setVisible(false);
+
     }
 
     setupGameObjects() {
 
-        if (!this.isSetMode) return;
-        // prevent multiple setup when switching modes
-        const cardTypes = this.isNormalMode ? this.cardTypes_normal : this.cardTypes_hard;
-        const positions = this.isNormalMode ? this.spawnCardPositions_normal : this.spawnCardPositions_hard;
-        const cardBackKey = this.isNormalMode ? 'game5_normalcard_back' : 'game5_hardcard_back';
-        this.totalPairs = this.isNormalMode ? 7 : 12;
+        const cardBackKey = 'game5_select_card';
+        const cardBackSelectedKey = 'game5_card_select';
+
+        const cardTypes = [
+            'game5_card1a', 'game5_card1b', 'game5_card1c', 'game5_card1d', 'game5_card1e',
+            'game5_card2a', 'game5_card2b', 'game5_card2c', 'game5_card2d', 'game5_card2e'
+        ];
+        const positions = this.spawnPos;
+
+        this.totalPairs = 5;
 
         // Create cards at fixed positions
+        if (!cardTypes || !positions) return;
+
         cardTypes.forEach((cardType, index) => {
             const pos = positions[index];
 
@@ -202,14 +138,19 @@ export class GameScene_5 extends BaseGameScene {
 
             cardBack.on('pointerover', () => {
                 cardBack.setScale(1.05);
+                cardBack.setTexture(cardBackSelectedKey);
             });
 
             cardBack.on('pointerout', () => {
                 cardBack.setScale(1);
+                cardBack.setTexture(cardBackKey);
             });
 
             // Add click handler
-            cardBack.on('pointerdown', () => this.onCardClick(card));
+            cardBack.on('pointerdown', () => {
+                this.onCardClick(card);
+                cardBack.setTexture(cardBackSelectedKey);
+            });
 
             this.cards.push(card);
         });
@@ -340,18 +281,10 @@ export class GameScene_5 extends BaseGameScene {
         this._calculateTiming(isFinalWin);
         this.enableGameInteraction(false);
         this.updateRoundUI(true);
-        // Feedback Visuals
         this.showFeedbackLabel(true);
 
         console.log(`Game won!`);
 
-        if (this.isNormalMode) {
-            this.winPreview = this.add.image(this.centerX, this.centerY, 'game5_normal_success_preview').setDepth(1000)
-                .setInteractive({ useHandCursor: true }).setScale(1.1)
-        } else {
-            this.winPreview = this.add.image(this.centerX, this.centerY, 'game5_hard_success_preview').setDepth(1000)
-                .setInteractive({ useHandCursor: true }).setScale(1.1)
-        }
         this.winPreview.setInteractive({ useHandCursor: true }).setScale(1.1)
             .on('pointerdown', () => {
                 this.winPreview.destroy();
@@ -359,64 +292,15 @@ export class GameScene_5 extends BaseGameScene {
             });
 
     }
-
-    showWin() {
-        this.showObjectPanel();
-    }
-
-    showObjectPanel() {
-        const objectPanel = new CustomPanel(this, 960, 600, [
-            { content: 'game5_object_description1' },
-            { content: 'game5_object_description2' }
-        ]);
-        objectPanel.setDepth(1000);
-        objectPanel.show();
-        objectPanel.setCloseCallBack(() => GameManager.backToMainStreet(this));
-    }
-
     showFailPanel() {
         const popupPanel = new CustomFailPanel(this, 960, 540, () => {
             popupPanel.destroy();
-            this.isSetMode = false;
             this.restartGame();
 
-            this.gameUI.descriptionPanel?.setCloseCallBack(() => this.showChooseModePanel());
+            this.gameUI.descriptionPanel?.setCloseCallBack(() => this.startGame());
         }, () => {
             GameManager.backToMainStreet(this);
         });
         popupPanel.setDepth(1000);
-    }
-
-    showChooseModePanel() {
-        const { width, height } = this.cameras.main;
-
-        this.modePanel = this.add.container(width / 2, height / 2).setDepth(2000);
-
-        const bg = this.add.image(0, 0, 'game5_mode_panel');
-        this.modePanel.add(bg);
-
-        const normalBtn = new CustomButton(this, 0, 0,
-            'game5_normal_button', 'game5_normal_button_click',
-            () => {
-                this.isNormalMode = true;
-                this.isSetMode = true;
-                this.modePanel.destroy();
-                this.resetForNewRound();
-                this.startGame();
-            }
-        );
-        this.modePanel.add(normalBtn);
-
-        const hardBtn = new CustomButton(this, 0, 200,
-            'game5_hard_button', 'game5_hard_button_click',
-            () => {
-                this.isNormalMode = false;
-                this.isSetMode = true;
-                this.modePanel.destroy();
-                this.resetForNewRound();
-                this.startGame();
-            }
-        );
-        this.modePanel.add(hardBtn);
     }
 }
