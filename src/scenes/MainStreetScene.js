@@ -127,30 +127,42 @@ export class MainStreetScene extends Phaser.Scene {
         }
 
         // // NPC spritesheets
+        for (let i = 1; i <= 3; i++) {
+            this.load.image(`npc_object${i}`, `assets/images/MainStreet/NPCs/object${i}.png`);
+            this.load.image(`npc_object_glow${i}`, `assets/images/MainStreet/NPCs/object${i}_glow.png`);
+        }
+
+
         this.load.spritesheet('npc1', 'assets/images/MainStreet/NPCs/NPC1.png', {
-            frameWidth: 173,
-            frameHeight: 241
+            frameWidth: 189,
+            frameHeight: 303
         });
         this.load.spritesheet('npc1_glow', 'assets/images/MainStreet/NPCs/NPC1_glow.png', {
-            frameWidth: 173,
-            frameHeight: 241
+            frameWidth: 189,
+            frameHeight: 303
         });
         this.load.spritesheet('npc2', 'assets/images/MainStreet/NPCs/NPC2.png',
-            { frameWidth: 152, frameHeight: 232 });
+            { frameWidth: 157.5, frameHeight: 287.5 });
         this.load.spritesheet('npc2_glow', 'assets/images/MainStreet/NPCs/NPC2_glow.png',
-            { frameWidth: 152, frameHeight: 232 });
+            { frameWidth: 157.5, frameHeight: 287.5 });
         this.load.spritesheet('npc3', 'assets/images/MainStreet/NPCs/NPC3.png',
-            { frameWidth: 202.5, frameHeight: 225.5 });
+            { frameWidth: 147.5, frameHeight: 291.5 });
         this.load.spritesheet('npc3_glow', 'assets/images/MainStreet/NPCs/NPC3_glow.png',
-            { frameWidth: 202, frameHeight: 225 });
+            { frameWidth: 147.5, frameHeight: 291.5 });
         this.load.spritesheet('npc4', 'assets/images/MainStreet/NPCs/NPC4.png',
-            { frameWidth: 134.5, frameHeight: 216 });
+            { frameWidth: 182, frameHeight: 304 });
         this.load.spritesheet('npc4_glow', 'assets/images/MainStreet/NPCs/NPC4_glow.png',
-            { frameWidth: 134.5, frameHeight: 216 });
-        this.load.spritesheet('npc5', 'assets/images/MainStreet/NPCs/NPC5.png',
-            { frameWidth: 208, frameHeight: 296 });
-        this.load.spritesheet('npc5_glow', 'assets/images/MainStreet/NPCs/NPC5_glow.png',
-            { frameWidth: 208, frameHeight: 296 });
+            { frameWidth: 182, frameHeight: 304 });
+        this.load.spritesheet('npc1b', 'assets/images/MainStreet/NPCs/NPC1B.png',
+            {
+                frameWidth: 189,
+                frameHeight: 303
+            });
+        this.load.spritesheet('npc1b_glow', 'assets/images/MainStreet/NPCs/NPC1B_glow.png',
+            {
+                frameWidth: 189,
+                frameHeight: 303
+            });
     }
 
     create() {
@@ -169,7 +181,7 @@ export class MainStreetScene extends Phaser.Scene {
         const genderKey = this.genderKey;
 
         this.minXClamp = 7300;
-        this.maxXClamp = 4300;
+        this.maxXClamp = 4200;
 
         console.log(`Player gender: ${gender}, genderKey: ${genderKey}`);
 
@@ -187,21 +199,28 @@ export class MainStreetScene extends Phaser.Scene {
         this.object4 = this.add.image(3810, 555, 'object4').setDepth(15).setScale(1.1);
         this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(false);
 
-        // 判斷關卡1與關卡2是否完成
+        // 判斷關卡1到5是否完成
         const game1Result = GameManager.loadOneGameResult(1);
         const game2Result = GameManager.loadOneGameResult(2);
-        const isGame1And2Finished = (game1Result && game1Result.isFinished) && (game2Result && game2Result.isFinished);
+        const game3Result = GameManager.loadOneGameResult(3);
+        const game4Result = GameManager.loadOneGameResult(4);
+        const game5Result = GameManager.loadOneGameResult(5);
+        const isGame1To5Finished = (game1Result && game1Result.isFinished) &&
+            (game2Result && game2Result.isFinished) &&
+            (game3Result && game3Result.isFinished) &&
+            (game4Result && game4Result.isFinished) &&
+            (game5Result && game5Result.isFinished);
 
-        if (isGame1And2Finished) {
+        if (isGame1To5Finished) {
             this.minXClamp = 880;
-            this.maxXClamp = 4300;
+            this.maxXClamp = 4200;
             this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
-            console.log("Game 1 and 2 finished. Using triggeredBackgroundSettings.");
+            console.log("Game 1 to 5 finished. Using triggeredBackgroundSettings.");
         } else {
 
             this.minXClamp = 2000;
-            this.maxXClamp = 4300;
-            console.log("Game 1 or 2 not finished. Using defaultBackgroundSettings.");
+            this.maxXClamp = 4200;
+            console.log("Game 1 to 5 not finished. Using defaultBackgroundSettings.");
         }
 
         // 設定相機邊界為總長度 8414px
@@ -267,10 +286,10 @@ export class MainStreetScene extends Phaser.Scene {
         // NPCs (trigger game)
         this.interactiveNpcs = [];
 
-        // const n1 = NpcHelper.createNpc(this, 1, 380, 550, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
-        // const n2 = NpcHelper.createNpc(this, 2, 1180, 550, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
-        // const n3 = NpcHelper.createNpc(this, 3, 1780, 550, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
-        // const n4 = NpcHelper.createNpc(this, 4, 2680, 550, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim');
+        const n1 = NpcHelper.createNpc(this, 1, 3300, 670, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
+        const n2 = NpcHelper.createNpc(this, 2, 2180, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
+        const n3 = NpcHelper.createNpc(this, 3, 4220, 670, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
+        const n4 = NpcHelper.createNpc(this, 4, 1480, 670, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim');
         // const n5 = NpcHelper.createNpc(this, 5, 3500, 750, 1, 'npc5', npc5_bubbles, 15, 'npc5_anim');
 
 
