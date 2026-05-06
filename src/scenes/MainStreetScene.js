@@ -239,7 +239,7 @@ export class MainStreetScene extends Phaser.Scene {
         this.interactiveNpcs = [];
 
         const n1 = NpcHelper.createNpc(this, 1, 3300, 670, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
-        const n2 = NpcHelper.createNpc(this, 2, 2280, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
+        const n2 = NpcHelper.createNpc(this, 2, 2380, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
         const n3 = NpcHelper.createNpc(this, 3, 4220, 680, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
         const n4 = NpcHelper.createNpc(this, 4, 1480, 650, 1, 'npc4', null, 6, 'npc4_anim'); // no game
         const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', null, 15, 'npc1b_anim');
@@ -288,20 +288,47 @@ export class MainStreetScene extends Phaser.Scene {
         const game3Result = GameManager.loadOneGameResult(3);
         const game4Result = GameManager.loadOneGameResult(4);
         const game5Result = GameManager.loadOneGameResult(5);
+
+        // 遊戲1完成：隱藏 npc1，顯示 npc1b
+        if (game1Result && game1Result.isFinished) {
+            n1.setVisible(false);
+            n1.active = false;
+            const idx = this.interactiveNpcs.indexOf(n1);
+            if (idx > -1) this.interactiveNpcs.splice(idx, 1);
+
+            n1b.setVisible(true);
+        } else {
+            n1.setVisible(true);
+            n1b.setVisible(false);
+        }
+
+        // 遊戲2完成：移動 npc2
+        if (game2Result && game2Result.isFinished) {
+            n2.x = 1130;
+        }
+
+
         const isGame1To5Finished = (game1Result && game1Result.isFinished) &&
-            (game2Result && game2Result.isFinished) &&
-            (game3Result && game3Result.isFinished) &&
-            (game4Result && game4Result.isFinished) &&
+            //(game2Result && game2Result.isFinished) &&
+            // (game3Result && game3Result.isFinished) &&
+            // (game4Result && game4Result.isFinished) &&
             (game5Result && game5Result.isFinished);
 
         if (isGame1To5Finished) {
             this.minXClamp = 880;
             this.maxXClamp = 4200;
+            this.object2.setVisible(false);
             this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
-            console.log("Game 1 to 5 finished. Using triggeredBackgroundSettings.");
+
+            // Destroy objectNpc2 completely and remove it from interaction list
+            objectNpc2.destroy();
+            const idx = this.interactiveNpcs.indexOf(objectNpc2);
+            if (idx > -1) this.interactiveNpcs.splice(idx, 1);
+
+            console.log("Game 1 and 5 finished. Using triggeredBackgroundSettings.");
         } else {
 
-            this.minXClamp = 800;
+            this.minXClamp = 2000;
             this.maxXClamp = 4200;
             console.log("Game 1 to 5 not finished. Using defaultBackgroundSettings.");
         }
@@ -359,7 +386,7 @@ export class MainStreetScene extends Phaser.Scene {
         ).setScrollFactor(0).setDepth(100);
 
         const playerPos = localStorage.getItem('playerPosition') ? JSON.parse(localStorage.getItem('playerPosition')) :
-            { x: 2000, y: 730 };
+            { x: 3000, y: 730 };
         this.playerPos = playerPos;
 
         // Start player at saved position (clamped to camera bounds)

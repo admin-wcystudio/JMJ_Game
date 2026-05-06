@@ -203,6 +203,7 @@ export class GameScene_1 extends BaseGameScene {
         this.showFeedbackLabel(true);
         this.showBubble('win', this.playerGender);
         this.playFeedback();
+
     }
 
     playFeedback() {
@@ -215,6 +216,7 @@ export class GameScene_1 extends BaseGameScene {
     }
 
     showWin() {
+
         this.showObjectPanel();
     }
 

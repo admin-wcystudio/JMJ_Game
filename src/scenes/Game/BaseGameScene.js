@@ -329,11 +329,10 @@ export default class BaseGameScene extends Phaser.Scene {
                     GameManager.saveGameResult(this.sceneIndex, true, this.totalUsedSeconds);
                     console.log(`遊戲 ${this.sceneIndex} 結束，總用時: ${this.totalUsedSeconds} 秒`);
                 }
-                this.showWin();
                 this.isGameActive = false;
                 this.gameState = 'completed';
-                GameManager.backToMainStreet(this);
                 if (typeof this.onGameWin === 'function') this.onGameWin();
+                this.showWin();
             }
         }
     }
@@ -517,7 +516,9 @@ export default class BaseGameScene extends Phaser.Scene {
     }
     showObjectPanel() { }
 
-    showWin() { }
+    showWin() {
+        GameManager.backToMainStreet(this);
+    }
 
     showLose() {
         this.showFailPanel();
