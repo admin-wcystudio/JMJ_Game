@@ -168,7 +168,7 @@ export class MainStreetScene extends Phaser.Scene {
         this.genderKey = gender === 'M' ? 'boy' : 'girl';
         const genderKey = this.genderKey;
 
-        this.minXClamp = 600;
+        this.minXClamp = 7300;
         this.maxXClamp = 4300;
 
         console.log(`Player gender: ${gender}, genderKey: ${genderKey}`);
@@ -181,6 +181,11 @@ export class MainStreetScene extends Phaser.Scene {
             const bg = this.add.image(currentX, 540, key).setOrigin(0, 0.5).setDepth(1);
             currentX += bg.width;
         });
+        this.object1 = this.add.image(1355, 970, 'object1').setDepth(15).setScale(1);
+        this.object2 = this.add.image(1720, 530, 'object2').setDepth(15).setScale(1);
+        this.object3 = this.add.image(2600, 555, 'object3').setDepth(15).setScale(1.1);
+        this.object4 = this.add.image(3810, 555, 'object4').setDepth(15).setScale(1.1);
+        this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(false);
 
         // 判斷關卡1與關卡2是否完成
         const game1Result = GameManager.loadOneGameResult(1);
@@ -188,11 +193,13 @@ export class MainStreetScene extends Phaser.Scene {
         const isGame1And2Finished = (game1Result && game1Result.isFinished) && (game2Result && game2Result.isFinished);
 
         if (isGame1And2Finished) {
-            this.minXClamp = 600;
+            this.minXClamp = 880;
             this.maxXClamp = 4300;
+            this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
             console.log("Game 1 and 2 finished. Using triggeredBackgroundSettings.");
         } else {
-            this.minXClamp = 2200;
+
+            this.minXClamp = 2000;
             this.maxXClamp = 4300;
             console.log("Game 1 or 2 not finished. Using defaultBackgroundSettings.");
         }
@@ -295,7 +302,7 @@ export class MainStreetScene extends Phaser.Scene {
         });
 
         const playerPos = localStorage.getItem('playerPosition') ? JSON.parse(localStorage.getItem('playerPosition')) :
-            { x: 3500, y: 730 };
+            { x: 2000, y: 730 };
         this.playerPos = playerPos;
 
         // Start player at saved position (clamped to camera bounds)
@@ -595,35 +602,35 @@ export class MainStreetScene extends Phaser.Scene {
 
         this.anims.create({
             key: 'girl_idle_anim',
-            frames: this.anims.generateFrameNumbers('girl_idle', { start: 0, end: 152 }),
+            frames: this.anims.generateFrameNumbers('girl_idle', { start: 0, end: 148 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_left_talk_anim',
-            frames: this.anims.generateFrameNumbers('girl_left_talk', { start: 0, end: 168 }),
+            frames: this.anims.generateFrameNumbers('girl_left_talk', { start: 0, end: 95 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_right_talk_anim',
-            frames: this.anims.generateFrameNumbers('girl_right_talk', { start: 0, end: 168 }),
+            frames: this.anims.generateFrameNumbers('girl_right_talk', { start: 0, end: 49 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_left_walk_anim',
-            frames: this.anims.generateFrameNumbers('girl_left_walk', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('girl_left_walk', { start: 0, end: 23 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_right_walk_anim',
-            frames: this.anims.generateFrameNumbers('girl_right_walk', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('girl_right_walk', { start: 0, end: 23 }),
             frameRate: 10,
             repeat: -1
         });
