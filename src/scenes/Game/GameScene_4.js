@@ -569,7 +569,7 @@ export class GameScene_4 extends BaseGameScene {
         this.anims.create({
             key: 'girl_rightwalking_anim',
             frames: this.anims.generateFrameNumbers('girl_rightwalking', { start: 0, end: 66 }),
-            frameRate: 30,
+            frameRate: 24,
             repeat: -1
         });
     }
