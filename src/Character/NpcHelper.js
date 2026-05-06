@@ -23,6 +23,24 @@ export default class NpcHelper {
         return npc;
     }
 
+    static createNpcItem(scene, id, x, y, npcScale = 2, key, glowKey = null, depth = 10,) {
+
+        let npcItem;
+
+        npcItem = scene.add.image(x, y, key).setDepth(depth);
+
+        npcItem.setScale(npcScale);
+        npcItem.baseKey = key;
+        npcItem.glowKey = glowKey ?? `${key}_glow`;
+        npcItem.isGlow = false;
+
+        npcItem.setInteractive({ useHandCursor: true });
+        npcItem.id = id;
+        npcItem.proximityDistance = 300;
+
+        return npcItem;
+    }
+
     static createCharacter(scene, x, y, npcScale = 1,
         spriteKey, depth = 10, animKey = null) {
 

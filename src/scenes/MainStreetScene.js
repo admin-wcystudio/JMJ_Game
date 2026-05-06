@@ -199,6 +199,57 @@ export class MainStreetScene extends Phaser.Scene {
         this.object4 = this.add.image(3810, 555, 'object4').setDepth(15).setScale(1.1);
         this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(false);
 
+
+
+        this.bubbleTimers = [];
+        const npc1_bubbles = ['npc1_bubble_1'];
+        const npc2_bubbles = ['npc2_bubble_1', 'npc2_bubble_2'];
+        const npc3_bubbles = ['npc3_bubble_1'];
+        const npc4_bubbles = ['npc4_bubble_1'];
+        const npc5_bubbles = ['npc5_bubble_1'];
+
+        // NPCs (trigger game)
+        this.interactiveNpcs = [];
+
+        const n1 = NpcHelper.createNpc(this, 1, 3300, 670, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
+        const n2 = NpcHelper.createNpc(this, 2, 2280, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
+        const n3 = NpcHelper.createNpc(this, 3, 4220, 670, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
+        const n4 = NpcHelper.createNpc(this, 4, 1480, 650, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim'); // no game
+        const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', npc5_bubbles, 15, 'npc1b_anim');
+
+        const objectNpc1 = NpcHelper.createNpcItem(this, 6, 2100, 585, 1, 'npc_object1', 'npc_object_glow1', 5);
+        const objectNpc2 = NpcHelper.createNpcItem(this, 7, 1850, 625, 1, 'npc_object2', 'npc_object_glow2', 15);
+        const objectNpc3 = NpcHelper.createNpcItem(this, 8, 1190, 130, 1, 'npc_object3', 'npc_object_glow3', 15);
+
+
+        this.interactiveNpcs.push(n1);
+        this.interactiveNpcs.push(n2);
+        this.interactiveNpcs.push(n3);
+        this.interactiveNpcs.push(objectNpc1);
+        this.interactiveNpcs.push(objectNpc2);
+        this.interactiveNpcs.push(objectNpc3);
+
+
+        this.currentInteractiveNpc = null;
+
+        // Add global input listener to stop movement when pointer is released anywhere
+        this.input.on('pointerup', () => {
+            this.isLeftDown = false;
+            this.isRightDown = false;
+        });
+
+        const npcGameMap = { 1: 1, 2: 2, 3: 3, 6: 4, 7: 5, 8: 6 };
+        this.interactiveNpcs.forEach((npc, index) => {
+            npc.on('pointerdown', () => {
+                if (npc.canInteract) {
+                    const gameNumber = npcGameMap[npc.id] ?? (index + 1);
+                    const sceneKey = `GameScene_${gameNumber}`;
+                    const characterbubble = `game${gameNumber}_${genderKey}_bubble`;
+                    this.loadBubble(0, npc.bubbles, sceneKey, npc, characterbubble);
+                }
+            });
+        });
+
         // 判斷關卡1到5是否完成
         const game1Result = GameManager.loadOneGameResult(1);
         const game2Result = GameManager.loadOneGameResult(2);
@@ -218,7 +269,7 @@ export class MainStreetScene extends Phaser.Scene {
             console.log("Game 1 to 5 finished. Using triggeredBackgroundSettings.");
         } else {
 
-            this.minXClamp = 2000;
+            this.minXClamp = 800;
             this.maxXClamp = 4200;
             console.log("Game 1 to 5 not finished. Using defaultBackgroundSettings.");
         }
@@ -274,51 +325,6 @@ export class MainStreetScene extends Phaser.Scene {
                 this.handleAnimation(genderKey, false, true);
             }
         ).setScrollFactor(0).setDepth(100);
-
-
-        this.bubbleTimers = [];
-        const npc1_bubbles = ['npc1_bubble_1'];
-        const npc2_bubbles = ['npc2_bubble_1', 'npc2_bubble_2'];
-        const npc3_bubbles = ['npc3_bubble_1'];
-        const npc4_bubbles = ['npc4_bubble_1'];
-        const npc5_bubbles = ['npc5_bubble_1'];
-
-        // NPCs (trigger game)
-        this.interactiveNpcs = [];
-
-        const n1 = NpcHelper.createNpc(this, 1, 3300, 670, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
-        const n2 = NpcHelper.createNpc(this, 2, 2180, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
-        const n3 = NpcHelper.createNpc(this, 3, 4220, 670, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
-        const n4 = NpcHelper.createNpc(this, 4, 1480, 670, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim');
-        // const n5 = NpcHelper.createNpc(this, 5, 3500, 750, 1, 'npc5', npc5_bubbles, 15, 'npc5_anim');
-
-
-        // this.interactiveNpcs.push(n1);
-        // this.interactiveNpcs.push(n2);
-        // this.interactiveNpcs.push(n3);
-        // this.interactiveNpcs.push(n4);
-        // this.interactiveNpcs.push(n5);
-
-
-        this.currentInteractiveNpc = null;
-
-        // Add global input listener to stop movement when pointer is released anywhere
-        this.input.on('pointerup', () => {
-            this.isLeftDown = false;
-            this.isRightDown = false;
-        });
-
-        const npcGameMap = { 1: 4, 2: 2, 3: 3, 4: 1, 5: 5 };
-        this.interactiveNpcs.forEach((npc, index) => {
-            npc.on('pointerdown', () => {
-                if (npc.canInteract) {
-                    const gameNumber = npcGameMap[npc.id] ?? (index + 1);
-                    const sceneKey = `GameScene_${gameNumber}`;
-                    const characterbubble = `game${gameNumber}_${genderKey}_bubble`;
-                    this.loadBubble(0, npc.bubbles, sceneKey, npc, characterbubble);
-                }
-            });
-        });
 
         const playerPos = localStorage.getItem('playerPosition') ? JSON.parse(localStorage.getItem('playerPosition')) :
             { x: 2000, y: 730 };
@@ -526,6 +532,20 @@ export class MainStreetScene extends Phaser.Scene {
         });
 
         this.anims.create({
+            key: 'npc1b_anim',
+            frames: this.anims.generateFrameNumbers('npc1b', { start: 0, end: 48 }),
+            frameRate: 24,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'npc1b_glow_anim',
+            frames: this.anims.generateFrameNumbers('npc1b_glow', { start: 0, end: 48 }),
+            frameRate: 24,
+            repeat: -1
+        });
+
+        this.anims.create({
             key: 'npc2_anim',
             frames: this.anims.generateFrameNumbers('npc2', { start: 0, end: 48 }),
             frameRate: 24,
@@ -563,20 +583,6 @@ export class MainStreetScene extends Phaser.Scene {
         this.anims.create({
             key: 'npc4_glow_anim',
             frames: this.anims.generateFrameNumbers('npc4_glow', { start: 0, end: 48 }),
-            frameRate: 24,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'npc5_anim',
-            frames: this.anims.generateFrameNumbers('npc5', { start: 0, end: 48 }),
-            frameRate: 24,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'npc5_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc5_glow', { start: 0, end: 48 }),
             frameRate: 24,
             repeat: -1
         });
