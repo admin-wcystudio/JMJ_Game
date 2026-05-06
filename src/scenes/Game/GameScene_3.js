@@ -15,7 +15,7 @@ export class GameScene_3 extends BaseGameScene {
         // NPC dialogue boxes (in ascending order)
         this.load.image('game3_npc_mainstreet_fail_01', `${path}game3_npc_box1.png`);
         this.load.image('game3_npc_mainstreet_fail_02', `${path}game3_npc_box2.png`);
-        this.load.image('game3_npc_mainstreet_win', `${path}game3_npc_box3.png`);
+        this.load.image('game3_npc_mainstreet', `${path}game3_npc_box3.png`);
 
         this.load.image('game3_npc_box_tryagain', `${path}game3_npc_box4.png`);
         this.load.image('game3_npc_box_win', `${path}game3_npc_box5.png`);

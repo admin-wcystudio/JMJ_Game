@@ -67,6 +67,17 @@ export class MainStreetScene extends Phaser.Scene {
             isAssetsLoaded = true;
             checkLoadingComplete();
         });
+
+        // // Only load spritesheets for the selected gender
+        let gender = 'F';
+        try {
+            if (localStorage.getItem('player')) {
+                gender = JSON.parse(localStorage.getItem('player')).gender || 'M';
+            }
+        } catch (e) {
+            gender = 'M';
+        }
+
         //main street backgrounds
         this.load.image('stage1', 'assets/images/MainStreet/stage1.png');
         this.load.image('stage2', 'assets/images/MainStreet/stage2.png');
@@ -78,27 +89,37 @@ export class MainStreetScene extends Phaser.Scene {
         this.load.image('gameintro_01', 'assets/images/MainStreet/gameintro.png');
         this.load.image('gametimer', 'assets/images/MainStreet/gameintro_timer.png');
 
-        this.load.image('npc1_bubble_1', 'assets/images/Game_4/game4_npc_box1.png');
+        this.load.image('npc1_bubble_1', 'assets/images/Game_1/game1_npc_box1.png');
 
         this.load.image('npc2_bubble_1', 'assets/images/Game_2/game2_npc_box1.png');
-        this.load.image('npc2_bubble_2', 'assets/images/Game_2/game2_npc_box2.png');
 
-        this.load.image('npc3_bubble_1', 'assets/images/Game_3/game3_npc_box1.png');
-        this.load.image('npc4_bubble_1', 'assets/images/Game_1/game1_npc_box1.png');
-        this.load.image('npc5_bubble_1', 'assets/images/Game_5/game5_npc_box1.png');
-        this.load.image('npc6_bubble_1', 'assets/images/Game_6/game6_npc_box1.png');
+        this.load.image('npc3_bubble_1', 'assets/images/Game_3/game3_npc_box3.png');
+        this.load.image('npc3_bubble_reject_01', 'assets/images/Game_3/game3_npc_box1.png');
+        this.load.image('npc3_bubble_reject_02', 'assets/images/Game_3/game3_npc_box2.png');
 
 
+        this.load.image('npc4_bubble_1', 'assets/images/Game_4/game4_npc_box3.png');
+        this.load.image('npc4_bubble_reject_01', 'assets/images/Game_4/game4_npc_box1.png');
+        this.load.image('npc4_bubble_reject_02', 'assets/images/Game_4/game4_npc_box2.png');
 
-        // // Only load spritesheets for the selected gender
-        let gender = 'F';
-        try {
-            if (localStorage.getItem('player')) {
-                gender = JSON.parse(localStorage.getItem('player')).gender || 'M';
-            }
-        } catch (e) {
-            gender = 'M';
+        this.load.image('npc5_bubble_reject_01', 'assets/images/Game_5/game5_npc_box1.png');
+        this.load.image('npc5_bubble_reject_02', 'assets/images/Game_5/game5_npc_box2.png');
+
+        if (gender === 'M') {
+            this.load.image('npc5_bubble_1', 'assets/images/Game_5/game5_npc_box3_boy.png');
+            this.load.image('npc5_bubble_2', 'assets/images/Game_5/game5_npc_box4_boy.png');
+        } else {
+            this.load.image('npc5_bubble_1', 'assets/images/Game_5/game5_npc_box3_girl.png');
+            this.load.image('npc5_bubble_2', 'assets/images/Game_5/game5_npc_box4_girl.png');
         }
+        this.load.image('npc5_bubble_3', 'assets/images/Game_5/game5_npc_box5.png');
+        this.load.image('npc5_bubble_4', 'assets/images/Game_5/game5_npc_box6.png');
+
+
+        this.load.image('npc6_bubble_1', 'assets/images/Game_6/game6_npc_box1.png');
+        this.load.image('npc6_bubble_2', 'assets/images/Game_6/game6_npc_box2.png');
+
+
 
         if (gender === 'M') {
             this.load.spritesheet('boy_idle', 'assets/images/MainStreet/Boy/maincharacter_boy_middlestand.png',
@@ -203,8 +224,10 @@ export class MainStreetScene extends Phaser.Scene {
 
         this.bubbleTimers = [];
         const npc1_bubbles = ['npc1_bubble_1'];
-        const npc2_bubbles = ['npc2_bubble_1', 'npc2_bubble_2'];
+        const npc2_bubbles = ['npc2_bubble_1'];
         const npc3_bubbles = ['npc3_bubble_1'];
+        const npc3_reject_bubbles = ['npc3_bubble_reject_01', 'npc3_bubble_reject_02'];
+
         const npc4_bubbles = ['npc4_bubble_1'];
         const npc5_bubbles = ['npc5_bubble_1'];
 
@@ -213,7 +236,7 @@ export class MainStreetScene extends Phaser.Scene {
 
         const n1 = NpcHelper.createNpc(this, 1, 3300, 670, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
         const n2 = NpcHelper.createNpc(this, 2, 2280, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
-        const n3 = NpcHelper.createNpc(this, 3, 4220, 670, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
+        const n3 = NpcHelper.createNpc(this, 3, 4220, 680, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
         const n4 = NpcHelper.createNpc(this, 4, 1480, 650, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim'); // no game
         const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', npc5_bubbles, 15, 'npc1b_anim');
 
@@ -519,70 +542,70 @@ export class MainStreetScene extends Phaser.Scene {
         // NPC Animations
         this.anims.create({
             key: 'npc1_anim',
-            frames: this.anims.generateFrameNumbers('npc1', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc1', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc1_glow', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc1_glow', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1b_anim',
-            frames: this.anims.generateFrameNumbers('npc1b', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc1b', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1b_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc1b_glow', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc1b_glow', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc2_anim',
-            frames: this.anims.generateFrameNumbers('npc2', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc2', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc2_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc2_glow', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc2_glow', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc3_anim',
-            frames: this.anims.generateFrameNumbers('npc3', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc3', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc3_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc3_glow', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc3_glow', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc4_anim',
-            frames: this.anims.generateFrameNumbers('npc4', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc4', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc4_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc4_glow', { start: 0, end: 48 }),
+            frames: this.anims.generateFrameNumbers('npc4_glow', { start: 0, end: 47 }),
             frameRate: 24,
             repeat: -1
         });
