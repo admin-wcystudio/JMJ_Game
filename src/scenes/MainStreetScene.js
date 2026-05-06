@@ -150,7 +150,7 @@ export class MainStreetScene extends Phaser.Scene {
         // // NPC spritesheets
         for (let i = 1; i <= 3; i++) {
             this.load.image(`npc_object${i}`, `assets/images/MainStreet/NPCs/object${i}.png`);
-            this.load.image(`npc_object_glow${i}`, `assets/images/MainStreet/NPCs/object${i}_glow.png`);
+            this.load.image(`npc_object${i}_glow`, `assets/images/MainStreet/NPCs/object${i}_glow.png`);
         }
 
 
@@ -229,7 +229,11 @@ export class MainStreetScene extends Phaser.Scene {
         const npc3_reject_bubbles = ['npc3_bubble_reject_01', 'npc3_bubble_reject_02'];
 
         const npc4_bubbles = ['npc4_bubble_1'];
-        const npc5_bubbles = ['npc5_bubble_1'];
+        const npc4_reject_bubbles = ['npc4_bubble_reject_01', 'npc4_bubble_reject_02'];
+
+        const npc5_bubbles = ['npc5_bubble_1', 'npc5_bubble_2', 'npc5_bubble_3', 'npc5_bubble_4'];
+        const npc5_reject_bubbles = ['npc5_bubble_reject_01', 'npc5_bubble_reject_02'];
+        const npc6_bubbles = ['npc6_bubble_1', 'npc6_bubble_2'];
 
         // NPCs (trigger game)
         this.interactiveNpcs = [];
@@ -237,12 +241,17 @@ export class MainStreetScene extends Phaser.Scene {
         const n1 = NpcHelper.createNpc(this, 1, 3300, 670, 1, 'npc1', npc1_bubbles, 6, 'npc1_anim');
         const n2 = NpcHelper.createNpc(this, 2, 2280, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
         const n3 = NpcHelper.createNpc(this, 3, 4220, 680, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
-        const n4 = NpcHelper.createNpc(this, 4, 1480, 650, 1, 'npc4', npc4_bubbles, 6, 'npc4_anim'); // no game
-        const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', npc5_bubbles, 15, 'npc1b_anim');
+        const n4 = NpcHelper.createNpc(this, 4, 1480, 650, 1, 'npc4', null, 6, 'npc4_anim'); // no game
+        const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', null, 15, 'npc1b_anim');
 
-        const objectNpc1 = NpcHelper.createNpcItem(this, 6, 2100, 585, 1, 'npc_object1', 'npc_object_glow1', 5);
-        const objectNpc2 = NpcHelper.createNpcItem(this, 7, 1850, 625, 1, 'npc_object2', 'npc_object_glow2', 15);
-        const objectNpc3 = NpcHelper.createNpcItem(this, 8, 1190, 130, 1, 'npc_object3', 'npc_object_glow3', 15);
+        const objectNpc1 = NpcHelper.createNpcItem(this, 6, 2100, 585, 1, 'npc_object1', 'npc_object1_glow', 5);
+        objectNpc1.bubbles = npc4_bubbles;
+
+        const objectNpc2 = NpcHelper.createNpcItem(this, 7, 1850, 625, 1, 'npc_object2', 'npc_object2_glow', 15);
+        objectNpc2.bubbles = npc5_bubbles;
+
+        const objectNpc3 = NpcHelper.createNpcItem(this, 8, 1190, 130, 1, 'npc_object3', 'npc_object3_glow', 15);
+        objectNpc3.bubbles = npc6_bubbles;
 
 
         this.interactiveNpcs.push(n1);
@@ -430,19 +439,23 @@ export class MainStreetScene extends Phaser.Scene {
 
     switchToGlowAndBack(npc, glow) {
         if (!npc || npc.isGlow) return;
-        if (!npc.glowKey || !npc.glowAnimKey) return;
+        if (!npc.glowKey) return;
 
         npc.setTexture(npc.glowKey);
-        npc.play(npc.glowAnimKey, true);
+        if (npc.glowAnimKey) {
+            npc.play(npc.glowAnimKey, true);
+        }
         npc.isGlow = true;
     }
 
     restoreFromGlow(npc) {
         if (!npc || !npc.isGlow) return;
-        if (!npc.baseKey || !npc.baseAnimKey) return;
+        if (!npc.baseKey) return;
 
         npc.setTexture(npc.baseKey);
-        npc.play(npc.baseAnimKey, true);
+        if (npc.baseAnimKey) {
+            npc.play(npc.baseAnimKey, true);
+        }
         npc.isGlow = false;
     }
 
