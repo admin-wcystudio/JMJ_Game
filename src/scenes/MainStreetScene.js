@@ -242,7 +242,7 @@ export class MainStreetScene extends Phaser.Scene {
         const n2 = NpcHelper.createNpc(this, 2, 2380, 670, 1, 'npc2', npc2_bubbles, 6, 'npc2_anim');
         const n3 = NpcHelper.createNpc(this, 3, 4220, 680, 1, 'npc3', npc3_bubbles, 6, 'npc3_anim');
         const n4 = NpcHelper.createNpc(this, 4, 1480, 650, 1, 'npc4', null, 6, 'npc4_anim'); // no game
-        const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', null, 15, 'npc1b_anim');
+        const n1b = NpcHelper.createNpc(this, 5, 730, 670, 1, 'npc1b', null, 6, 'npc1b_anim');
 
         const objectNpc1 = NpcHelper.createNpcItem(this, 6, 2100, 585, 1, 'npc_object1', 'npc_object1_glow', 5);
         objectNpc1.bubbles = npc4_bubbles;
@@ -305,6 +305,8 @@ export class MainStreetScene extends Phaser.Scene {
         // 遊戲2完成：移動 npc2
         if (game2Result && game2Result.isFinished) {
             n2.x = 1130;
+            const idx = this.interactiveNpcs.indexOf(n2);
+            if (idx > -1) this.interactiveNpcs.splice(idx, 1);
         }
 
 
@@ -317,7 +319,6 @@ export class MainStreetScene extends Phaser.Scene {
         if (isGame1To5Finished) {
             this.minXClamp = 880;
             this.maxXClamp = 4200;
-            this.object2.setVisible(false);
             this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
 
             // Destroy objectNpc2 completely and remove it from interaction list
