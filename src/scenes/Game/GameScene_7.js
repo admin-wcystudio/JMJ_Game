@@ -352,7 +352,7 @@ export class GameScene_7 extends BaseGameScene {
             this.showFinalPanel();
         });
 
-        this.time.delayedCall(5000, () => {
+        this.time.delayedCall(4000, () => {
             this.descriptionPanel.show();
         });
     }

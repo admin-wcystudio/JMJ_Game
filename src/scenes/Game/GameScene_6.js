@@ -46,7 +46,7 @@ export class GameScene_6 extends BaseGameScene {
 
         this.initGame('game6_bg', 'game6_description', true, false, {
             targetRounds: 1,
-            roundPerSeconds: 2000,
+            roundPerSeconds: 120,
             isAllowRoundFail: false,
             isContinuousTimer: false,
             sceneIndex: 6
@@ -165,11 +165,13 @@ export class GameScene_6 extends BaseGameScene {
         if (this.sound.isPlaying) {
             this.sound.stopAll();
         }
-        this.sound.play(`music_0${objectId}`, { loop: true, volume: 0.5 });
+        this.sound.play(`music_0${objectId}`, { loop: true, volume: 0.2 });
 
     }
     ResumeMusic() {
         this.sound.stopAll();
+
+        this.sound.play('bgm', { loop: true, volume: 0.2 });
     }
 
     findNearestSnapPosition(x, y, gameObject = null) {
@@ -277,6 +279,8 @@ export class GameScene_6 extends BaseGameScene {
         // Prevent multiple entries
         if (this.gameState === 'gameLose') return;
 
+        this.ResumeMusic();
+
         this.currentFailCount = (this.currentFailCount || 0) + 1; // Increment fail count
 
         // Standard Logic
@@ -342,7 +346,9 @@ export class GameScene_6 extends BaseGameScene {
         }]);
         objectPanel.setDepth(1000);
         objectPanel.show();
-        objectPanel.setCloseCallBack(() => GameManager.backToMainStreet(this));
+        objectPanel.setCloseCallBack(() => {
+            GameManager.switchToGameScene(this, 'GameScene_7');
+        });
     }
 
 

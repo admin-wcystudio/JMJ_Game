@@ -84,7 +84,7 @@ export class GameScene_5 extends BaseGameScene {
         // Now call initGame which will call setupGameObjects
         this.initGame('game5_bg', 'game5_description', true, false, {
             targetRounds: 1,
-            roundPerSeconds: 120,
+            roundPerSeconds: 60,
             isAllowRoundFail: false,
             isContinuousTimer: true,
             sceneIndex: 5
@@ -124,7 +124,7 @@ export class GameScene_5 extends BaseGameScene {
             // Card front (hidden initially) - scale to match card back size
             const cardFront = this.add.image(0, 0, cardType)
                 .setVisible(false)
-                .setScale(0.6);
+                .setScale(0.65);
 
             card.add([cardBack, cardFront]);
 
