@@ -23,7 +23,7 @@ export class GameScene_7 extends BaseGameScene {
             this.load.image(`game7_fill_answer${i}`, `${path}game7_fill_answer${i}.png`);
         }
 
-        this.load.image('game7_npc_box_mainstreet', `${path}game7_npc_box1.png`);
+        this.load.image('game7_npc_box_intro', `${path}game7_npc_box1.png`);
 
         this.load.image('game7_npc_box_win', `${path}game7_npc_box2.png`);
         this.load.image('game7_npc_box_win_2', `${path}game7_npc_box3.png`);
@@ -64,7 +64,7 @@ export class GameScene_7 extends BaseGameScene {
             });
         this.confirmBtn.setDepth(100).setVisible(false);
 
-        this.initGame('game7_bg', 'game7_description', true, false, {
+        this.initGame('game7_bg', 'game7_description', false, false, {
             targetRounds: 1,
             roundPerSeconds: 120,
             isAllowRoundFail: false,
