@@ -10,6 +10,7 @@ export class LoginScene extends Phaser.Scene {
     preload() {
 
         const loginPath = 'assets/images/Login/';
+        this.load.audio('bgm', 'assets/music/bgm.mp3');
         this.load.video('login_bg_video', loginPath + 'choosepage_bg.mp4');
 
         this.load.image('login_boy_btn', loginPath + 'choosepage_boy_button.png');
@@ -45,6 +46,10 @@ export class LoginScene extends Phaser.Scene {
     create() {
         this.bgVideo = this.add.video(960, 540, 'login_bg_video');
         this.bgVideo.getFirstFrame();
+
+        if (this.sound.getAll('bgm').length === 0) {
+            this.sound.play('bgm', { loop: true, volume: 0.5 });
+        }
 
         this.createAnimations();
 
@@ -95,7 +100,7 @@ export class LoginScene extends Phaser.Scene {
 
         ]
 
-        const ui = UIHelper.createCommonUI(this, programPages, descriptionPages,);
+        this.ui = UIHelper.createCommonUI(this, programPages, descriptionPages);
 
         this.add.image(960, 150, 'login_namebar').setDepth(10);
 
@@ -115,6 +120,13 @@ export class LoginScene extends Phaser.Scene {
 
         this.nameInput.on('textchange', (inputText) => {
             console.log("現在的名字是:", inputText.text);
+        });
+
+        // DOM input focus can cause browsers to pause media — resume it immediately
+        this.nameInput.on('focus', () => {
+            if (this.bgVideo && this.bgVideo.video && this.bgVideo.video.paused) {
+                this.bgVideo.video.play();
+            }
         });
 
         this.selectedGender = 'M';
@@ -252,6 +264,16 @@ export class LoginScene extends Phaser.Scene {
         });
 
 
+    }
+
+    update() {
+        if (this.ui && this.nameInput) {
+            const anyPanelVisible =
+                (this.ui.settingPanel?.visible) ||
+                (this.ui.descriptionPanel?.visible) ||
+                (this.ui.programPanel?.visible);
+            this.nameInput.setVisible(!anyPanelVisible);
+        }
     }
 
 }

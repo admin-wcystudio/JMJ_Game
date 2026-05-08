@@ -94,7 +94,7 @@ export class GameScene_4 extends BaseGameScene {
         this.createAnimations();
 
         // Movement settings
-        this.moveStep = 60;  // Pixels per move
+        this.moveStep = 70;  // Pixels per move
         this.isMoving = false;
 
         // Player start position
@@ -108,6 +108,8 @@ export class GameScene_4 extends BaseGameScene {
             isContinuousTimer: true,
             sceneIndex: 4
         });
+
+        this.gameUI.descriptionPanel.setVisible(false);
 
         // Direction buttons
         this.leftBtn = new CustomButton(this, 1500, 950, 'left_btn', 'left_btn_click', () => {
@@ -157,6 +159,18 @@ export class GameScene_4 extends BaseGameScene {
     }
 
     update(time, delta) {
+        // Draw player collider debug box (always, regardless of game state)
+        if (this.debugGraphics && this.player) {
+            const bw = 40, bh = 20;
+            const bx = this.player.x - bw / 2;
+            const by = this.player.y + 60 - bh / 2;
+            this.debugGraphics.clear();
+            this.debugGraphics.fillStyle(0xff00ff, 0.4);
+            this.debugGraphics.fillRect(bx, by, bw, bh);
+            this.debugGraphics.lineStyle(2, 0xff00ff, 1);
+            this.debugGraphics.strokeRect(bx, by, bw, bh);
+        }
+
         if (!this.isGameActive) return;
         super.update(time, delta);
 
@@ -167,35 +181,41 @@ export class GameScene_4 extends BaseGameScene {
     createWallColliders() {
         this.wallRects = [];
 
-        const debugVisible = false;
+        const debugVisible = true;
         // Outer boundary walls
-        this.createWall(this.centerX, 160, 2300, 210, debugVisible, true);
-        this.createWall(this.centerX + 480, 250, 800, 150, debugVisible, true);
-        this.createWall(this.centerX, this.centerY + 450, 2300, 230, debugVisible, true);
+        this.createWall(this.centerX, 180, 2300, 210, debugVisible, true);
+        this.createWall(this.centerX + 460, 250, 800, 170, debugVisible, true);
+        this.createWall(this.centerX, this.centerY + 440, 2300, 240, debugVisible, true);
         this.createWall(this.centerX + 550, this.centerY + 430, 500, 210, debugVisible, true);
 
         // Interior walls
-        this.createWall(800, 450, 290, 190, debugVisible, true);
-        this.createWall(this.centerX - 520, this.centerY + 130, 280, 250, debugVisible, true);
-        this.createWall(this.centerX - 430, this.centerY + 90, 400, 140, debugVisible, true);
-        this.createWall(this.centerX - 180, this.centerY + 330, 250, 150, debugVisible, true);
+        this.createWall(800 - 5, 460, 260, 190, debugVisible, true);
+        this.createWall(this.centerX - 520, this.centerY + 130, 250, 240, debugVisible, true);
+        this.createWall(this.centerX - 430, this.centerY + 90, 430, 140, debugVisible, true);
+
+        //start left
+        this.createWall(this.centerX - 170, this.centerY + 330, 250, 150, debugVisible, true);
+
         this.createWall(1000, 680, 320, 60, debugVisible, true);
-        this.createWall(1050, 500, 750, 120, debugVisible, true);
+        this.createWall(1050, 500, 750, 140, debugVisible, true);
+
         // Top-left / right grass/tree area
-        this.createWall(100, 350, 250, 180, debugVisible, true);
+        this.createWall(100, 365, 250, 180, debugVisible, true);
+
         // Left side vertical grass path
         this.createWall(0, 520, 150, 980, debugVisible, true);
+        this.createWall(200, 800, 70, 500, debugVisible, true);
+
         // Bottom-left grass
-        this.createWall(200, 800, 50, 500, debugVisible, true);
         this.createWall(120, 850, 100, 100, debugVisible, true);
         this.createWall(400, 320, 150, 100, debugVisible, true);
-        this.createWall(450, 420, 280, 100, debugVisible, true);
+        this.createWall(450, 420, 260, 100, debugVisible, true);
 
         this.createWall(1090, 850, 160, 120, debugVisible, true);
         this.createWall(1820, 780, 150, 120, debugVisible, true);
         this.createWall(1870, 350, 100, 980, debugVisible, true);
         this.createWall(900, 560, 140, 180, debugVisible, true);
-        this.createWall(1350, 600, 150, 330, debugVisible, true);
+        this.createWall(1340, 600, 170, 330, debugVisible, true);
         this.createWall(1620, 690, 240, 350, debugVisible, true);
         this.createWall(1650, 320, 280, 200, debugVisible, true);
 
@@ -217,7 +237,7 @@ export class GameScene_4 extends BaseGameScene {
 
 
     moveDirection(direction) {
-        if (this.isMoving || !this.isGameActive) return;
+        // if (this.isMoving || !this.isGameActive) return;
 
         let targetX = this.player.x;
         let targetY = this.player.y;
@@ -249,7 +269,7 @@ export class GameScene_4 extends BaseGameScene {
         }
 
         // Manual intersection check against walls using points instead of Arcade physics
-        if (this.wouldCollideWithWall(targetX - 20, targetY - 30)) {
+        if (this.wouldCollideWithWall(targetX, targetY)) {
             console.log('[GameScene_4] Blocked by wall!');
             return;
         }
@@ -275,10 +295,10 @@ export class GameScene_4 extends BaseGameScene {
     }
 
     wouldCollideWithWall(x, y) {
-        const hitBBoxSize = 20;
-        // Offset down to the character's feet (sprite is 105px * scale 2 = 210px tall, feet ~90px below center)
-        const feetY = y + 90;
-        const playerRect = new Phaser.Geom.Rectangle(x - hitBBoxSize / 2, feetY - hitBBoxSize / 2, hitBBoxSize, hitBBoxSize);
+        const bw = 40, bh = 20;
+        // Feet area: centered horizontally on player, 60px below player origin
+        const feetY = y + 60;
+        const playerRect = new Phaser.Geom.Rectangle(x - bw / 2, feetY - bh / 2, bw, bh);
 
         let colliding = false;
         for (const wall of this.wallRects) {

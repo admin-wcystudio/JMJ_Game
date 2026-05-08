@@ -267,6 +267,7 @@ export class GameScene_6 extends BaseGameScene {
         if (border1Correct && border2Correct && border3Correct) {
             console.log('[ANSWER] ✓ All objects correctly placed in all borders!');
             this.onRoundWin();
+            this.ResumeMusic();
             console.log(this.gameState);
 
         } else {
