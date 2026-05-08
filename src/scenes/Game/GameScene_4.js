@@ -94,7 +94,7 @@ export class GameScene_4 extends BaseGameScene {
         this.createAnimations();
 
         // Movement settings
-        this.moveStep = 70;  // Pixels per move
+        this.moveStep = 60;  // Pixels per move
         this.isMoving = false;
 
         // Player start position
@@ -108,8 +108,6 @@ export class GameScene_4 extends BaseGameScene {
             isContinuousTimer: true,
             sceneIndex: 4
         });
-
-        this.gameUI.descriptionPanel.setVisible(false);
 
         // Direction buttons
         this.leftBtn = new CustomButton(this, 1500, 950, 'left_btn', 'left_btn_click', () => {
@@ -153,22 +151,24 @@ export class GameScene_4 extends BaseGameScene {
         this.createWallColliders();
 
         // Debug: visualize player collision box (set to false to hide)
-        this.debugCollider = true;
+        this.debugCollider = false;
         this.debugGraphics = this.add.graphics().setDepth(999);
 
     }
 
     update(time, delta) {
-        // Draw player collider debug box (always, regardless of game state)
-        if (this.debugGraphics && this.player) {
-            const bw = 40, bh = 20;
-            const bx = this.player.x - bw / 2;
-            const by = this.player.y + 60 - bh / 2;
+        // Redraw all walls green each frame, blocking wall will flash red on top
+        if (this.debugGraphics && this.wallRects) {
             this.debugGraphics.clear();
-            this.debugGraphics.fillStyle(0xff00ff, 0.4);
-            this.debugGraphics.fillRect(bx, by, bw, bh);
-            this.debugGraphics.lineStyle(2, 0xff00ff, 1);
-            this.debugGraphics.strokeRect(bx, by, bw, bh);
+            this.debugGraphics.fillStyle(0x00ff00, 0.25);
+            for (const wall of this.wallRects) {
+                this.debugGraphics.fillRect(wall.x, wall.y, wall.width, wall.height);
+            }
+            // Keep blocked wall red for 500ms
+            if (this.lastBlockedWall && (time - this.lastBlockedTime) < 500) {
+                this.debugGraphics.fillStyle(0xff0000, 0.6);
+                this.debugGraphics.fillRect(this.lastBlockedWall.x, this.lastBlockedWall.y, this.lastBlockedWall.width, this.lastBlockedWall.height);
+            }
         }
 
         if (!this.isGameActive) return;
@@ -237,7 +237,7 @@ export class GameScene_4 extends BaseGameScene {
 
 
     moveDirection(direction) {
-        // if (this.isMoving || !this.isGameActive) return;
+        if (this.isMoving || !this.isGameActive) return;
 
         let targetX = this.player.x;
         let targetY = this.player.y;
@@ -295,26 +295,28 @@ export class GameScene_4 extends BaseGameScene {
     }
 
     wouldCollideWithWall(x, y) {
-        const bw = 40, bh = 20;
+        const bw = 30, bh = 20;
         // Feet area: centered horizontally on player, 60px below player origin
-        const feetY = y + 60;
+        const feetY = y + 70;
         const playerRect = new Phaser.Geom.Rectangle(x - bw / 2, feetY - bh / 2, bw, bh);
 
-        let colliding = false;
         for (const wall of this.wallRects) {
             const wallRect = new Phaser.Geom.Rectangle(wall.x, wall.y, wall.width, wall.height);
             if (Phaser.Geom.Intersects.RectangleToRectangle(playerRect, wallRect)) {
-                colliding = true;
-                break;
-            }
+                console.log(`[Wall Block] player feet at (${x.toFixed(0)}, ${feetY.toFixed(0)}) hit wall: x=${wall.x.toFixed(0)} y=${wall.y.toFixed(0)} w=${wall.width} h=${wall.height}`);                // Flash the blocking wall red
+                this.lastBlockedWall = wall;
+                this.lastBlockedTime = this.time.now;
+
+                return true;
+            } else { }
         }
 
-        return colliding;
+        return false;
     }
 
     /** Check collision with fail objects using distance */
     checkFailCollision() {
-        const hitRadius = 80;
+        const hitRadius = 50;
         for (const failObj of this.failObjects) {
             if (!failObj.visible) continue;
             const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, failObj.x, failObj.y);
@@ -334,7 +336,7 @@ export class GameScene_4 extends BaseGameScene {
 
     /** Check collection of success objects using distance */
     checkSuccessCollection() {
-        const pickupRadius = 80;
+        const pickupRadius = 50;
         for (const successObj of this.successObjects) {
             if (!successObj.visible) continue;
             const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, successObj.x, successObj.y);
