@@ -94,12 +94,12 @@ export class GameScene_4 extends BaseGameScene {
         this.createAnimations();
 
         // Movement settings
-        this.moveStep = 60;  // Pixels per move
+        this.moveStep = 58;  // Pixels per move
         this.isMoving = false;
 
         // Player start position
         this.playerStartX = this.centerX;
-        this.playerStartY = 800;
+        this.playerStartY = 750;
 
         this.initGame('game4_bg', 'game4_description', true, false, {
             targetRounds: 3,
@@ -108,6 +108,8 @@ export class GameScene_4 extends BaseGameScene {
             isContinuousTimer: true,
             sceneIndex: 4
         });
+
+        //  this.gameUI.descriptionPanel.setVisible(false);
 
         // Direction buttons
         this.leftBtn = new CustomButton(this, 1500, 950, 'left_btn', 'left_btn_click', () => {
@@ -157,19 +159,19 @@ export class GameScene_4 extends BaseGameScene {
     }
 
     update(time, delta) {
-        // Redraw all walls green each frame, blocking wall will flash red on top
-        if (this.debugGraphics && this.wallRects) {
-            this.debugGraphics.clear();
-            this.debugGraphics.fillStyle(0x00ff00, 0.25);
-            for (const wall of this.wallRects) {
-                this.debugGraphics.fillRect(wall.x, wall.y, wall.width, wall.height);
-            }
-            // Keep blocked wall red for 500ms
-            if (this.lastBlockedWall && (time - this.lastBlockedTime) < 500) {
-                this.debugGraphics.fillStyle(0xff0000, 0.6);
-                this.debugGraphics.fillRect(this.lastBlockedWall.x, this.lastBlockedWall.y, this.lastBlockedWall.width, this.lastBlockedWall.height);
-            }
-        }
+
+        // if (this.debugGraphics && this.wallRects) {
+        //     this.debugGraphics.clear();
+        //     this.debugGraphics.fillStyle(0x00ff00, 0.25);
+        //     for (const wall of this.wallRects) {
+        //         this.debugGraphics.fillRect(wall.x, wall.y, wall.width, wall.height);
+        //     }
+        //     // Keep blocked wall red for 500ms
+        //     if (this.lastBlockedWall && (time - this.lastBlockedTime) < 500) {
+        //         this.debugGraphics.fillStyle(0xff0000, 0.6);
+        //         this.debugGraphics.fillRect(this.lastBlockedWall.x, this.lastBlockedWall.y, this.lastBlockedWall.width, this.lastBlockedWall.height);
+        //     }
+        // }
 
         if (!this.isGameActive) return;
         super.update(time, delta);
@@ -181,17 +183,17 @@ export class GameScene_4 extends BaseGameScene {
     createWallColliders() {
         this.wallRects = [];
 
-        const debugVisible = true;
+        const debugVisible = false;
         // Outer boundary walls
         this.createWall(this.centerX, 180, 2300, 210, debugVisible, true);
         this.createWall(this.centerX + 460, 250, 800, 170, debugVisible, true);
-        this.createWall(this.centerX, this.centerY + 440, 2300, 240, debugVisible, true);
+        this.createWall(this.centerX - 260, this.centerY + 455, 1000, 240, debugVisible, true);
         this.createWall(this.centerX + 550, this.centerY + 430, 500, 210, debugVisible, true);
 
         // Interior walls
         this.createWall(800 - 5, 460, 260, 190, debugVisible, true);
         this.createWall(this.centerX - 520, this.centerY + 130, 250, 240, debugVisible, true);
-        this.createWall(this.centerX - 430, this.centerY + 90, 430, 140, debugVisible, true);
+        this.createWall(this.centerX - 430, this.centerY + 75, 430, 160, debugVisible, true);
 
         //start left
         this.createWall(this.centerX - 170, this.centerY + 330, 250, 150, debugVisible, true);
@@ -204,7 +206,7 @@ export class GameScene_4 extends BaseGameScene {
 
         // Left side vertical grass path
         this.createWall(0, 520, 150, 980, debugVisible, true);
-        this.createWall(200, 800, 70, 500, debugVisible, true);
+        this.createWall(195, 800, 60, 500, debugVisible, true);
 
         // Bottom-left grass
         this.createWall(120, 850, 100, 100, debugVisible, true);
@@ -215,8 +217,9 @@ export class GameScene_4 extends BaseGameScene {
         this.createWall(1820, 780, 150, 120, debugVisible, true);
         this.createWall(1870, 350, 100, 980, debugVisible, true);
         this.createWall(900, 560, 140, 180, debugVisible, true);
+
         this.createWall(1340, 600, 170, 330, debugVisible, true);
-        this.createWall(1620, 690, 240, 350, debugVisible, true);
+        this.createWall(1620, 690, 210, 350, debugVisible, true);
         this.createWall(1650, 320, 280, 200, debugVisible, true);
 
     }
