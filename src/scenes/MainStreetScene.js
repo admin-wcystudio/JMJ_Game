@@ -594,70 +594,70 @@ export class MainStreetScene extends Phaser.Scene {
         this.anims.create({
             key: 'npc1_anim',
             frames: this.anims.generateFrameNumbers('npc1', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1_glow_anim',
             frames: this.anims.generateFrameNumbers('npc1_glow', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1b_anim',
             frames: this.anims.generateFrameNumbers('npc1b', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1b_glow_anim',
             frames: this.anims.generateFrameNumbers('npc1b_glow', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc2_anim',
             frames: this.anims.generateFrameNumbers('npc2', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc2_glow_anim',
             frames: this.anims.generateFrameNumbers('npc2_glow', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc3_anim',
             frames: this.anims.generateFrameNumbers('npc3', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc3_glow_anim',
             frames: this.anims.generateFrameNumbers('npc3_glow', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc4_anim',
             frames: this.anims.generateFrameNumbers('npc4', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc4_glow_anim',
             frames: this.anims.generateFrameNumbers('npc4_glow', { start: 0, end: 15 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
@@ -667,63 +667,63 @@ export class MainStreetScene extends Phaser.Scene {
         this.anims.create({
             key: 'boy_idle_anim',
             frames: this.anims.generateFrameNumbers('boy_idle', { start: 0, end: 152 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'boy_left_talk_anim',
             frames: this.anims.generateFrameNumbers('boy_left_talk', { start: 0, end: 168 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'boy_right_talk_anim',
             frames: this.anims.generateFrameNumbers('boy_right_talk', { start: 0, end: 168 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'boy_left_walk_anim',
             frames: this.anims.generateFrameNumbers('boy_left_walk', { start: 0, end: 48 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'boy_right_walk_anim',
             frames: this.anims.generateFrameNumbers('boy_right_walk', { start: 0, end: 48 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_idle_anim',
             frames: this.anims.generateFrameNumbers('girl_idle', { start: 0, end: 148 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_left_talk_anim',
             frames: this.anims.generateFrameNumbers('girl_left_talk', { start: 0, end: 95 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_right_talk_anim',
             frames: this.anims.generateFrameNumbers('girl_right_talk', { start: 0, end: 49 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 
         this.anims.create({
             key: 'girl_left_walk_anim',
             frames: this.anims.generateFrameNumbers('girl_left_walk', { start: 0, end: 23 }),
-            frameRate: 24,
+            frameRate: 12,
             repeat: -1
         });
 

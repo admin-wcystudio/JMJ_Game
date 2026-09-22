@@ -17,8 +17,8 @@ export class GameScene_3 extends BaseGameScene {
         this.load.image('game3_npc_mainstreet_fail_02', `${path}game3_npc_box2.png`);
         this.load.image('game3_npc_mainstreet', `${path}game3_npc_box3.png`);
 
-        this.load.image('game3_npc_box_tryagain', `${path}game3_npc_box4.png`);
-        this.load.image('game3_npc_box_win', `${path}game3_npc_box5.png`);
+        this.load.image('game3_npc_box_win', `${path}game3_npc_box4.png`);
+        this.load.image('game3_npc_box_tryagain', `${path}game3_npc_box5.png`);
 
         // UI buttons
         this.load.image('confirm_button', `${path}game3_confirm_button.png`);

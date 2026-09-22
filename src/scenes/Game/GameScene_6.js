@@ -33,6 +33,9 @@ export class GameScene_6 extends BaseGameScene {
 
         this.load.image('game6_success_description1', `${path}game6_success_description1.png`);
         this.load.image('game6_success_description2', `${path}game6_success_description2.png`);
+        this.load.image('game6_remind', `${path}game6_remind.png`);
+        this.load.image('game6_success_mark', `${path}game6_success.png`);
+        this.load.image('game6_success_badge', `${path}game6_success_icon.png`);
 
     }
 
@@ -62,6 +65,8 @@ export class GameScene_6 extends BaseGameScene {
     }
 
     setupGameObjects() {
+        this.add.image(this.centerX, 162, 'game6_remind').setDepth(400);
+
         this.border1 = this.add.image(this.centerX - 500, this.centerY, 'game6_border1').setDepth(500).setVisible(true);
         this.border2 = this.add.image(this.centerX, this.centerY, 'game6_border2').setDepth(500).setVisible(true);
         this.border3 = this.add.image(this.centerX + 500, this.centerY, 'game6_border3').setDepth(500).setVisible(true);
@@ -226,17 +231,37 @@ export class GameScene_6 extends BaseGameScene {
     }
 
     enableGameInteraction(enable) {
-        this.objects.forEach((obj, index) => {
-            obj.setVisible(enable);
-            obj.setInteractive(enable);
+        this.objects.forEach((obj) => {
+            obj.setVisible(true);
             if (enable) {
-                console.log(`[INTERACTION] Object ${obj.objectId} at (${Math.round(obj.x)}, ${Math.round(obj.y)}) - visible: ${obj.visible}, interactive: ${obj.input ? obj.input.enabled : 'no input'}`);
+                obj.setInteractive({ draggable: true });
+            } else if (obj.input) {
+                obj.disableInteractive();
             }
         });
         if (this.confirmBtn) {
             this.confirmBtn.setVisible(enable);
-            console.log(`[INTERACTION] Confirm button visibility: ${enable}`);
         }
+    }
+
+    showFeedbackLabel(isSuccess) {
+        if (isSuccess) return;
+        super.showFeedbackLabel(isSuccess);
+    }
+
+    showCompletedStyle() {
+        if (this.completedMarks) return;
+        this.completedMarks = this.musicButtons.map((btn) => {
+            return this.add.image(btn.x + 52, btn.y - 22, 'game6_success_mark')
+                .setScale(0.38)
+                .setDepth(560);
+        });
+        const last = this.musicButtons[this.musicButtons.length - 1];
+        this.completedMarks.push(
+            this.add.image(last.x + 78, last.y + 6, 'game6_success_badge')
+                .setScale(0.55)
+                .setDepth(560)
+        );
     }
 
     checkAnswer() {
@@ -266,6 +291,7 @@ export class GameScene_6 extends BaseGameScene {
 
         if (border1Correct && border2Correct && border3Correct) {
             console.log('[ANSWER] ✓ All objects correctly placed in all borders!');
+            this.showCompletedStyle();
             this.onRoundWin();
             this.ResumeMusic();
             console.log(this.gameState);
@@ -306,12 +332,15 @@ export class GameScene_6 extends BaseGameScene {
             obj.x = obj.originalX;
             obj.y = obj.originalY;
         });
+        if (this.completedMarks) {
+            this.completedMarks.forEach(mark => mark.destroy());
+            this.completedMarks = null;
+        }
     }
 
     onWinBubbleClose() {
         GameManager.saveGameResult(6, true, this.totalUsedSeconds);
 
-        this.objects.forEach(obj => obj.setVisible(false));
         if (this.confirmBtn) this.confirmBtn.setVisible(false);
         this.nextDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game6_npc_box_win_02').setDepth(1000);
         this.nextDialog.setInteractive({ useHandCursor: true });

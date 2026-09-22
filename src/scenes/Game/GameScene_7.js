@@ -37,6 +37,7 @@ export class GameScene_7 extends BaseGameScene {
 
         this.load.image('game7_success_description', `${path}game7_success_description.png`);
         this.load.video('success_video', `${path}game7_success_preview.mp4`);
+        this.load.video('ending_mv', `${path}MV.mp4`);
 
 
     }
@@ -367,7 +368,50 @@ export class GameScene_7 extends BaseGameScene {
         ]);
         objectPanel.setDepth(1000);
         objectPanel.show();
-        objectPanel.setCloseCallBack(() => GameManager.switchToGameScene(this, 'GameResultScene'));
+        objectPanel.setCloseCallBack(() => {
+            objectPanel.destroy();
+            this.playEndingMv();
+        });
+    }
+
+    playEndingMv() {
+        if (this._endingMvStarted) return;
+        this._endingMvStarted = true;
+
+        if (this.video) {
+            this.video.stop();
+            this.video.destroy();
+            this.video = null;
+        }
+
+        const bgm = this.sound.get('bgm');
+        if (bgm?.isPlaying) bgm.pause();
+
+        this.add.rectangle(this.centerX, this.centerY, this.width, this.height, 0x000000)
+            .setDepth(1990);
+
+        const mv = this.add.video(this.centerX, this.centerY, 'ending_mv').setDepth(2000);
+        const fitVideo = () => {
+            const source = mv.video;
+            const videoWidth = source?.videoWidth || mv.width;
+            const videoHeight = source?.videoHeight || mv.height;
+            if (!videoWidth || !videoHeight) return;
+            mv.setScale(Math.min(this.width / videoWidth, this.height / videoHeight));
+        };
+        mv.on('created', fitVideo);
+        mv.play(false);
+
+        const goToResult = () => {
+            if (this._endingMvDone) return;
+            this._endingMvDone = true;
+            mv.stop();
+            if (bgm && !bgm.isPlaying) bgm.resume();
+            GameManager.switchToGameScene(this, 'GameResultScene');
+        };
+
+        mv.once('complete', goToResult);
+        new CustomButton(this, this.width - 80, 80, 'close_btn', 'close_btn_click', goToResult)
+            .setDepth(2010);
     }
 
 

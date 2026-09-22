@@ -37,7 +37,7 @@ export class GameScene_4 extends BaseGameScene {
             this.load.image(`game4_success_object${i}`, `${path}game4_success_object${i}.png`);
         }
 
-        this.gender = 'M';
+        this.gender = 'F';
         if (localStorage.getItem('player')) {
             this.gender = JSON.parse(localStorage.getItem('player')).gender;
         }
