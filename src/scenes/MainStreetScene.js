@@ -3,6 +3,7 @@ import UIHelper from '../UI/UIHelper.js';
 import { CustomPanel, SettingPanel } from '../UI/Panel.js';
 import NpcHelper from '../Character/NpcHelper.js';
 import GameManager from './GameManager.js';
+import VoiceOverHelper from '../Audio/VoiceOverHelper.js';
 
 export class MainStreetScene extends Phaser.Scene {
     constructor() {
@@ -88,6 +89,8 @@ export class MainStreetScene extends Phaser.Scene {
         }
         this.load.image('gameintro_01', 'assets/images/MainStreet/gameintro.png');
         this.load.image('gametimer', 'assets/images/MainStreet/gameintro_timer.png');
+
+        VoiceOverHelper.preload(this);
 
         this.load.image('npc1_bubble_1', 'assets/images/Game_1/game1_npc_box1.png');
 
@@ -189,6 +192,8 @@ export class MainStreetScene extends Phaser.Scene {
     create() {
         // Create NPC animations
         this.createAnimations();
+        this.events.once('shutdown', () => VoiceOverHelper.stop(this));
+        VoiceOverHelper.ensureBgm(this);
 
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
@@ -275,9 +280,11 @@ export class MainStreetScene extends Phaser.Scene {
             npc.on('pointerdown', () => {
                 if (npc.canInteract) {
                     const gameNumber = npcGameMap[npc.id] ?? (index + 1);
-                    const sceneKey = `GameScene_${gameNumber}`;
+                    const locked = !VoiceOverHelper.arePrereqsMet(gameNumber);
+                    const lines = VoiceOverHelper.getStreetLines(gameNumber, locked);
+                    const sceneKey = locked ? null : `GameScene_${gameNumber}`;
                     const characterbubble = `game${gameNumber}_${genderKey}_bubble`;
-                    this.loadBubble(0, npc.bubbles, sceneKey, npc, characterbubble);
+                    this.loadBubble(0, lines, sceneKey, npc, characterbubble);
                 }
             });
         });
@@ -450,6 +457,7 @@ export class MainStreetScene extends Phaser.Scene {
                     this.bubbleTimers = [];
 
                     // 2. Destroy NPC Bubble
+                    VoiceOverHelper.stop(this);
                     if (this.currentActiveBubble) {
                         this.currentActiveBubble.destroy();
                         this.currentActiveBubble = null;
@@ -529,6 +537,7 @@ export class MainStreetScene extends Phaser.Scene {
         // 綁定當前 NPC 到對話框，方便 update 檢查距離
         this.bubbleImg.ownerNpc = targetNpc;
         this.currentActiveBubble = this.bubbleImg;
+        VoiceOverHelper.playBubbleVo(this, bubbles[index]);
 
         this.switchTalkingAnimation(this.genderKey, targetNpc.x < this.playerSprite.x);
 
@@ -554,6 +563,7 @@ export class MainStreetScene extends Phaser.Scene {
 
             this.time.delayedCall(500, () => {
                 if (sceneKey && targetNpc.canInteract) {
+                    VoiceOverHelper.stop(this);
                     localStorage.setItem('playerPosition', JSON.stringify({ x: this.playerSprite.x, y: this.playerSprite.y }));
                     GameManager.switchToGameScene(this, sceneKey);
                 }
@@ -583,70 +593,70 @@ export class MainStreetScene extends Phaser.Scene {
         // NPC Animations
         this.anims.create({
             key: 'npc1_anim',
-            frames: this.anims.generateFrameNumbers('npc1', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc1', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc1_glow', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc1_glow', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1b_anim',
-            frames: this.anims.generateFrameNumbers('npc1b', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc1b', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc1b_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc1b_glow', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc1b_glow', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc2_anim',
-            frames: this.anims.generateFrameNumbers('npc2', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc2', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc2_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc2_glow', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc2_glow', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc3_anim',
-            frames: this.anims.generateFrameNumbers('npc3', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc3', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc3_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc3_glow', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc3_glow', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc4_anim',
-            frames: this.anims.generateFrameNumbers('npc4', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc4', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });
 
         this.anims.create({
             key: 'npc4_glow_anim',
-            frames: this.anims.generateFrameNumbers('npc4_glow', { start: 0, end: 47 }),
+            frames: this.anims.generateFrameNumbers('npc4_glow', { start: 0, end: 15 }),
             frameRate: 24,
             repeat: -1
         });

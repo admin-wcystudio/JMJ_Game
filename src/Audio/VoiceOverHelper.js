@@ -9,137 +9,83 @@ export default class VoiceOverHelper {
     static bgmAllowed = false;
     static currentBubbleKey = null;
 
+    // Street bubble texture keys. Audio bases are resolved in SEMANTIC_TO_BOX.
+    // Games 3–5 show the lock lines until the previous reward stages are cleared.
     static GAME_DIALOGUE = {
         1: {
-            street: ['game1_npc_box1'],
-            intro: [],
-            win: 'game1_npc_box8',
-            fail: 'game1_npc_box9'
+            street: ['npc1_bubble_1']
         },
         2: {
-            street: ['game2_npc_box1', 'game2_npc_box2'],
-            intro: [],
-            win: 'game2_npc_box3',
-            winFinal: ['game2_npc_box4'],
-            fail: 'game2_npc_box5',
-            fail2: 'game2_npc_box6'
+            street: ['npc2_bubble_1']
         },
         3: {
-            street: ['game3_npc_box1'],
-            intro: [],
-            win: 'game3_npc_box2',
-            fail: 'game3_npc_box3'
+            streetLock: ['npc3_bubble_reject_01', 'npc3_bubble_reject_02'],
+            street: ['npc3_bubble_1']
         },
         4: {
-            street: ['game4_npc_box1'],
-            intro: [],
-            win: 'game4_npc_box2',
-            fail: 'game4_npc_box3'
+            streetLock: ['npc4_bubble_reject_01', 'npc4_bubble_reject_02'],
+            street: ['npc4_bubble_1']
         },
         5: {
-            streetLock: ['game5_npc_box2'],
-            street: ['game5_npc_box3'],
-            intro: [],
-            win: 'game5_npc_box4',
-            fail: 'game5_npc_box5'
+            streetLock: ['npc5_bubble_reject_01', 'npc5_bubble_reject_02'],
+            street: ['npc5_bubble_1', 'npc5_bubble_2', 'npc5_bubble_3', 'npc5_bubble_4']
         },
         6: {
-            street: ['game6_npc_box1'],
-            intro: ['game6_npc_box1'],
-            win: 'game6_npc_box2',
-            fail: 'game6_npc_box4',
-            winFinal: ['game6_npc_box5', 'game6_npc_box6', 'game6_npc_box7']
-        },
-        7: {
-            intro: ['game7_npc_box1'],
-            win: 'game7_npc_box2',
-            fail: 'game7_popup2'
+            street: ['npc6_bubble_1', 'npc6_bubble_2']
         }
+    };
+
+    // Game 3 needs the hairpin from game 2. Game 4 needs the map from game 3.
+    // Game 5 needs both the map and the lock tool.
+    static STREET_PREREQS = {
+        3: [2],
+        4: [3],
+        5: [3, 4]
     };
 
     static STEMS = [
         'Game_1/game1_npc_box1',
-        'Game_1/game1_npc_box3',
-        'Game_1/game1_npc_box4',
-        'Game_1/game1_npc_box5',
-        'Game_1/game1_npc_box6',
-        'Game_1/game1_npc_box7',
-        'Game_1/game1_npc_box8',
-        'Game_1/game1_npc_box9',
         'Game_2/game2_npc_box1',
-        'Game_2/game2_npc_box2',
-        'Game_2/game2_npc_box3',
-        'Game_2/game2_npc_box4',
-        'Game_2/game2_npc_box5',
-        'Game_2/game2_npc_box6',
         'Game_3/game3_npc_box1',
         'Game_3/game3_npc_box2',
         'Game_3/game3_npc_box3',
         'Game_4/game4_npc_box1',
         'Game_4/game4_npc_box2',
         'Game_4/game4_npc_box3',
+        'Game_5/game5_npc_box1',
         'Game_5/game5_npc_box2',
-        'Game_5/game5_npc_box3',
-        'Game_5/game5_npc_box4',
+        'Game_5/game5_npc_box3_boy',
+        'Game_5/game5_npc_box3_girl',
+        'Game_5/game5_npc_box4_boy',
+        'Game_5/game5_npc_box4_girl',
         'Game_5/game5_npc_box5',
+        'Game_5/game5_npc_box6',
         'Game_6/game6_npc_box1',
-        'Game_6/game6_npc_box2',
-        'Game_6/game6_npc_box4',
-        'Game_6/game6_npc_box5',
-        'Game_6/game6_npc_box6',
-        'Game_6/game6_npc_box7',
-        'Game_7/game7_npc_box1',
-        'Game_7/game7_npc_box2',
-        'Game_7/game7_popup2'
+        'Game_6/game6_npc_box2'
     ];
 
-    // Source files for game1 box1 include an extra period before the language suffix.
-    static FILE_OVERRIDES = {
-        game1_npc_box1_Mandarin: 'assets/VO/Game_1/game1_npc_box1._Mandarin.mp3',
-        game1_npc_box1_Cantonese: 'assets/VO/Game_1/game1_npc_box1._Cantonese.mp3'
-    };
+    static FILE_OVERRIDES = {};
 
     static SEMANTIC_TO_BOX = {
-        npc1_bubble_1: 'game4_npc_box1',
+        npc1_bubble_1: 'game1_npc_box1',
         npc2_bubble_1: 'game2_npc_box1',
-        npc2_bubble_2: 'game2_npc_box2',
-        npc3_bubble_1: 'game3_npc_box1',
-        npc4_bubble_1: 'game1_npc_box1',
+        npc3_bubble_reject_01: 'game3_npc_box1',
+        npc3_bubble_reject_02: 'game3_npc_box2',
+        npc3_bubble_1: 'game3_npc_box3',
+        npc4_bubble_reject_01: 'game4_npc_box1',
+        npc4_bubble_reject_02: 'game4_npc_box2',
+        npc4_bubble_1: 'game4_npc_box3',
+        npc5_bubble_reject_01: 'game5_npc_box1',
+        npc5_bubble_reject_02: 'game5_npc_box2',
         npc5_bubble_1: 'game5_npc_box3',
-        npc5_bubble_lock: 'game5_npc_box2',
+        npc5_bubble_2: 'game5_npc_box4',
+        npc5_bubble_3: 'game5_npc_box5',
+        npc5_bubble_4: 'game5_npc_box6',
         npc6_bubble_1: 'game6_npc_box1',
-        game7_npc_box_intro: 'game7_npc_box1',
-        game1_npc_box_mainstreet_01: 'game1_npc_box1',
-        game1_npc_box_win: 'game1_npc_box8',
-        game1_npc_box_tryagain: 'game1_npc_box9',
-        game2_npc_box_mainstreet: 'game2_npc_box1',
-        game2_npc_box_mainstreet_01: 'game2_npc_box2',
-        game2_npc_box_win: 'game2_npc_box3',
-        game2_npc_box_win_01: 'game2_npc_box4',
-        game2_npc_box_tryagain: 'game2_npc_box5',
-        game2_npc_box_tryagain_02: 'game2_npc_box6',
-        game3_npc_box_mainstreet: 'game3_npc_box1',
-        game3_npc_box_win: 'game3_npc_box2',
-        game3_npc_box_tryagain: 'game3_npc_box3',
-        game4_npc_box_win: 'game4_npc_box2',
-        game4_npc_box_tryagain: 'game4_npc_box3',
-        game5_npc_box_win: 'game5_npc_box4',
-        game5_npc_box_tryagain: 'game5_npc_box5',
-        game6_npc_box_mainstreet: 'game6_npc_box1',
-        game6_npc_box_intro: 'game6_npc_box1',
-        game6_npc_box_win: 'game6_npc_box2',
-        game6_npc_box_win_01: 'game6_npc_box3',
-        game6_npc_box_tryagain: 'game6_npc_box4',
-        game6_npc_box_anim_01: 'game6_npc_box5',
-        game6_npc_box_anim_02: 'game6_npc_box6',
-        game6_npc_box_anim_03: 'game6_npc_box7',
-        game7_npc_box_win: 'game7_npc_box2',
-        dialogue: 'game7_npc_box1',
-        popup_fail: 'game7_popup2',
-        popup_02: 'game7_popup2'
+        npc6_bubble_2: 'game6_npc_box2'
     };
 
-    static NPC_TO_GAME = { 1: 4, 2: 2, 3: 3, 4: 1, 5: 5, 6: 6 };
+    static NPC_TO_GAME = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 };
 
     static preload(scene) {
         if (!scene._voLoadErrorBound) {
@@ -173,7 +119,7 @@ export default class VoiceOverHelper {
     static arePrereqsMet(gameId) {
         if (gameConfig.isTesting) return true;
         const results = GameManager.loadGameResult();
-        const needed = gameId === 5 ? [1, 2, 3, 4] : [];
+        const needed = VoiceOverHelper.STREET_PREREQS[gameId] || [];
         return needed.every((n) => {
             const res = results.find((r) => r.game === n);
             return res && res.isFinished;
