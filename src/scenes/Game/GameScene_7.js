@@ -3,6 +3,7 @@ import BaseGameScene from './BaseGameScene.js';
 import { CustomButton } from '../../UI/Button.js';
 import { CustomPanel, CustomFailPanel } from '../../UI/Panel.js';
 import GameManager from '../GameManager.js';
+import VoiceOverHelper from '../../Audio/VoiceOverHelper.js';
 
 export class GameScene_7 extends BaseGameScene {
     constructor() {
@@ -11,6 +12,7 @@ export class GameScene_7 extends BaseGameScene {
 
     preload() {
         const path = 'assets/images/Game_7/';
+        VoiceOverHelper.preload(this);
         const player = JSON.parse(localStorage.getItem('player') || '{"gender":"M"}');
         this.genderKey = player.gender === 'M' ? 'boy' : 'girl';
 
@@ -313,11 +315,15 @@ export class GameScene_7 extends BaseGameScene {
 
         this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game7_npc_box_win_2')
             .setDepth(100).setInteractive({ useHandCursor: true });
+        VoiceOverHelper.playBubbleVo(this, 'game7_npc_box_win_2');
         this.otherDialog.on('pointerdown', () => {
+            VoiceOverHelper.stop(this);
             this.otherDialog.destroy();
             this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game7_npc_box_win_3')
                 .setDepth(100).setInteractive({ useHandCursor: true });
+            VoiceOverHelper.playBubbleVo(this, 'game7_npc_box_win_3');
             this.otherDialog.on('pointerdown', () => {
+                VoiceOverHelper.stop(this);
                 this.otherDialog.destroy();
                 this.playSuccessVideoFeedback();
             });

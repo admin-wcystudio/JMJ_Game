@@ -2,6 +2,7 @@ import BaseGameScene from './BaseGameScene.js';
 import { CustomButton } from '../../UI/Button.js';
 import { CustomPanel, CustomFailPanel } from '../../UI/Panel.js';
 import GameManager from '../GameManager.js';
+import VoiceOverHelper from '../../Audio/VoiceOverHelper.js';
 
 export class GameScene_1 extends BaseGameScene {
     constructor() {
@@ -14,6 +15,8 @@ export class GameScene_1 extends BaseGameScene {
         this.height = this.cameras.main.height;
         this.centerX = this.width / 2;
         this.centerY = this.height / 2;
+
+        VoiceOverHelper.preload(this);
 
         this.load.image('game1_npc_box_mainstreet', `${path}game1_npc_box1.png`);
         this.load.image('game1_npc_box_win', `${path}game1_npc_box2.png`);

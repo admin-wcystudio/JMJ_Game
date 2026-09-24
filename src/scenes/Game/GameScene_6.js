@@ -2,6 +2,7 @@ import BaseGameScene from './BaseGameScene.js';
 import { CustomButton } from '../../UI/Button.js';
 import { CustomPanel, CustomFailPanel } from '../../UI/Panel.js';
 import GameManager from '../GameManager.js';
+import VoiceOverHelper from '../../Audio/VoiceOverHelper.js';
 
 
 export class GameScene_6 extends BaseGameScene {
@@ -10,6 +11,7 @@ export class GameScene_6 extends BaseGameScene {
     }
     preload() {
         const path = 'assets/images/Game_6/';
+        VoiceOverHelper.preload(this);
         this.load.image('confirm_button', `${path}game6_confirm_button.png`);
         this.load.image('confirm_button_select', `${path}game6_confirm_button_select.png`);
 
@@ -344,7 +346,9 @@ export class GameScene_6 extends BaseGameScene {
         if (this.confirmBtn) this.confirmBtn.setVisible(false);
         this.nextDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game6_npc_box_win_02').setDepth(1000);
         this.nextDialog.setInteractive({ useHandCursor: true });
+        VoiceOverHelper.playBubbleVo(this, 'game6_npc_box_win_02');
         this.nextDialog.once('pointerdown', () => {
+            VoiceOverHelper.stop(this);
             this.nextDialog.destroy();
             this.showDescriptionPanel();
         });

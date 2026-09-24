@@ -45,12 +45,16 @@ export default class VoiceOverHelper {
 
     static STEMS = [
         'Game_1/game1_npc_box1',
+        'Game_1/game1_npc_box2',
+        'Game_1/game1_npc_box3',
         'Game_2/game2_npc_box1',
         'Game_2/game2_npc_box2',
         'Game_2/game2_npc_box3',
         'Game_3/game3_npc_box1',
         'Game_3/game3_npc_box2',
         'Game_3/game3_npc_box3',
+        'Game_3/game3_npc_box4',
+        'Game_3/game3_npc_box5',
         'Game_4/game4_npc_box1',
         'Game_4/game4_npc_box2',
         'Game_4/game4_npc_box3',
@@ -64,20 +68,34 @@ export default class VoiceOverHelper {
         'Game_5/game5_npc_box4_girl',
         'Game_5/game5_npc_box5',
         'Game_5/game5_npc_box6',
+        'Game_5/game5_npc_box7',
+        'Game_5/game5_npc_box8',
         'Game_6/game6_npc_box1',
-        'Game_6/game6_npc_box2'
+        'Game_6/game6_npc_box2',
+        'Game_6/game6_npc_box3',
+        'Game_6/game6_npc_box4',
+        'Game_6/game6_npc_box5',
+        'Game_7/game7_npc_box1',
+        'Game_7/game7_npc_box2',
+        'Game_7/game7_npc_box3',
+        'Game_7/game7_npc_box4',
+        'Game_7/game7_npc_box5'
     ];
 
     static FILE_OVERRIDES = {};
 
     static SEMANTIC_TO_BOX = {
         npc1_bubble_1: 'game1_npc_box1',
+        game1_npc_box_win: 'game1_npc_box2',
+        game1_npc_box_tryagain: 'game1_npc_box3',
         npc2_bubble_1: 'game2_npc_box1',
         game2_npc_box_win: 'game2_npc_box2',
         game2_npc_box_tryagain: 'game2_npc_box3',
         npc3_bubble_reject_01: 'game3_npc_box1',
         npc3_bubble_reject_02: 'game3_npc_box2',
         npc3_bubble_1: 'game3_npc_box3',
+        game3_npc_box_win: 'game3_npc_box4',
+        game3_npc_box_tryagain: 'game3_npc_box5',
         npc4_bubble_reject_01: 'game4_npc_box1',
         npc4_bubble_reject_02: 'game4_npc_box2',
         npc4_bubble_1: 'game4_npc_box3',
@@ -89,8 +107,18 @@ export default class VoiceOverHelper {
         npc5_bubble_2: 'game5_npc_box4',
         npc5_bubble_3: 'game5_npc_box5',
         npc5_bubble_4: 'game5_npc_box6',
+        game5_npc_box_win: 'game5_npc_box7',
+        game5_npc_box_tryagain: 'game5_npc_box8',
         npc6_bubble_1: 'game6_npc_box1',
-        npc6_bubble_2: 'game6_npc_box2'
+        npc6_bubble_2: 'game6_npc_box2',
+        game6_npc_box_win: 'game6_npc_box3',
+        game6_npc_box_win_02: 'game6_npc_box4',
+        game6_npc_box_tryagain: 'game6_npc_box5',
+        game7_npc_box_intro: 'game7_npc_box1',
+        game7_npc_box_win: 'game7_npc_box2',
+        game7_npc_box_win_2: 'game7_npc_box3',
+        game7_npc_box_win_3: 'game7_npc_box4',
+        game7_npc_box_tryagain: 'game7_npc_box5'
     };
 
     static NPC_TO_GAME = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 };

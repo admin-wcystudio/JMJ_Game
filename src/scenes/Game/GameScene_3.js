@@ -3,6 +3,7 @@ import BaseGameScene from './BaseGameScene.js';
 import { CustomButton } from '../../UI/Button.js';
 import { CustomPanel, CustomFailPanel, QuestionPanel } from '../../UI/Panel.js';
 import GameManager from '../GameManager.js';
+import VoiceOverHelper from '../../Audio/VoiceOverHelper.js';
 
 export class GameScene_3 extends BaseGameScene {
     constructor() {
@@ -12,6 +13,7 @@ export class GameScene_3 extends BaseGameScene {
     preload() {
 
         const path = 'assets/images/Game_3/';
+        VoiceOverHelper.preload(this);
         // NPC dialogue boxes (in ascending order)
         this.load.image('game3_npc_mainstreet_fail_01', `${path}game3_npc_box1.png`);
         this.load.image('game3_npc_mainstreet_fail_02', `${path}game3_npc_box2.png`);
