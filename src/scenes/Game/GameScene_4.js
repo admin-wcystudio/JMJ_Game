@@ -2,6 +2,7 @@ import BaseGameScene from './BaseGameScene.js';
 import { CustomButton } from '../../UI/Button.js';
 import { CustomPanel, CustomFailPanel } from '../../UI/Panel.js';
 import GameManager from '../GameManager.js';
+import VoiceOverHelper from '../../Audio/VoiceOverHelper.js';
 
 export class GameScene_4 extends BaseGameScene {
     constructor() {
@@ -15,6 +16,7 @@ export class GameScene_4 extends BaseGameScene {
         this.centerX = this.width / 2;
         this.centerY = this.height / 2;
 
+        VoiceOverHelper.preload(this);
 
         this.load.image('game4_npc_box_mainstreet_fail_01', `${path}game4_npc_box1.png`);
         this.load.image('game4_npc_box_mainstreet_fail_02', `${path}game4_npc_box2.png`);
@@ -132,13 +134,12 @@ export class GameScene_4 extends BaseGameScene {
         this.genderKey = this.gender === 'M' ? 'boy' : 'girl';
         console.log('genderKey:', this.genderKey);
 
-        // Use frontstop for boy, frontwalking for girl (girl_frontstop doesn't exist)
-        const idleKey = this.gender === 'M' ? 'frontstop' : 'frontwalking';
-        this.idleAnimKey = `${this.genderKey}_${idleKey}_anim`;
+        const idleTextureKey = this.gender === 'M' ? 'frontstop' : 'frontwalking';
+        this.idleAnimKey = `${this.genderKey}_frontstop_anim`;
         this.lastDirection = 'down';
 
         // Create player at starting position as a normal sprite (NO physics body)
-        this.player = this.add.sprite(this.playerStartX, this.playerStartY, `${this.genderKey}_${idleKey}`)
+        this.player = this.add.sprite(this.playerStartX, this.playerStartY, `${this.genderKey}_${idleTextureKey}`)
             .setOrigin(0.5, 0.5).setDepth(2).setScale(2);
 
         this.failObjects = [];
@@ -265,9 +266,7 @@ export class GameScene_4 extends BaseGameScene {
             case 'down':
                 targetY += this.moveStep;
                 walkAnimKey = `${this.genderKey}_frontwalking_anim`;
-                stopAnimKey = this.gender === 'M'
-                    ? `${this.genderKey}_frontstop_anim`
-                    : `${this.genderKey}_frontwalking_anim`;
+                stopAnimKey = `${this.genderKey}_frontstop_anim`;
                 break;
         }
 
@@ -574,6 +573,12 @@ export class GameScene_4 extends BaseGameScene {
             repeat: -1
         });
         this.anims.create({
+            key: 'girl_frontstop_anim',
+            frames: this.anims.generateFrameNumbers('girl_frontwalking', { start: 0, end: 0 }),
+            frameRate: 1,
+            repeat: -1
+        });
+        this.anims.create({
             key: 'girl_leftstop_anim',
             frames: this.anims.generateFrameNumbers('girl_leftstop', { start: 0, end: 66 }),
             frameRate: 30,
@@ -593,7 +598,7 @@ export class GameScene_4 extends BaseGameScene {
         });
         this.anims.create({
             key: 'girl_rightwalking_anim',
-            frames: this.anims.generateFrameNumbers('girl_rightwalking', { start: 0, end: 66 }),
+            frames: this.anims.generateFrameNumbers('girl_rightwalking', { start: 33, end: 66 }),
             frameRate: 24,
             repeat: -1
         });

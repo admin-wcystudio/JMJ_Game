@@ -2,6 +2,7 @@ import { CustomButton } from '../../UI/Button.js';
 import UIHelper from '../../UI/UIHelper.js';
 import GameManager from '../GameManager.js';
 import { CustomPanel, CustomFailPanel } from '../../UI/Panel.js';
+import VoiceOverHelper from '../../Audio/VoiceOverHelper.js';
 
 /**
  * Enhanced BaseGameScene
@@ -155,10 +156,12 @@ export default class BaseGameScene extends Phaser.Scene {
             duration: 200,
             ease: 'Back.easeOut'
         });
+        VoiceOverHelper.playBubbleVo(this, targetKey);
         let closed = false;
         const closeBubble = () => {
             if (closed) return;
             closed = true;
+            VoiceOverHelper.stop(this);
             if (this.currentBubbleImg) {
                 this.currentBubbleImg.destroy();
                 this.currentBubbleImg = null;
