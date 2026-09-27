@@ -176,9 +176,10 @@ export class GameScene_6 extends BaseGameScene {
 
     }
     ResumeMusic() {
-        this.sound.stopAll();
-
-        this.sound.play('bgm', { loop: true, volume: 0.2 });
+        for (let i = 1; i <= 3; i++) {
+            this.sound.stopByKey(`music_0${i}`);
+        }
+        VoiceOverHelper.ensureBgm(this);
     }
 
     findNearestSnapPosition(x, y, gameObject = null) {
@@ -293,8 +294,8 @@ export class GameScene_6 extends BaseGameScene {
         if (border1Correct && border2Correct && border3Correct) {
             console.log('[ANSWER] ✓ All objects correctly placed in all borders!');
             this.showCompletedStyle();
-            this.onRoundWin();
             this.ResumeMusic();
+            this.onRoundWin();
             console.log(this.gameState);
 
         } else {
