@@ -254,14 +254,13 @@ export class GameScene_6 extends BaseGameScene {
     showCompletedStyle() {
         if (this.completedMarks) return;
         this.completedMarks = this.musicButtons.map((btn) => {
-            return this.add.image(btn.x + 52, btn.y - 22, 'game6_success_mark')
-                .setScale(0.38)
+            return this.add.image(btn.x + 24, btn.y - 28, 'game6_success_mark')
+                .setScale(0.32)
                 .setDepth(560);
         });
-        const last = this.musicButtons[this.musicButtons.length - 1];
         this.completedMarks.push(
-            this.add.image(last.x + 78, last.y + 6, 'game6_success_badge')
-                .setScale(0.55)
+            this.add.image(this.centerX + 680, this.centerY - 280, 'game6_success_badge')
+                .setScale(0.5)
                 .setDepth(560)
         );
     }

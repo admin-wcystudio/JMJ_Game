@@ -391,8 +391,8 @@ export class GameScene_7 extends BaseGameScene {
             this.video = null;
         }
 
-        const bgm = this.sound.get('bgm');
-        if (bgm?.isPlaying) bgm.pause();
+        VoiceOverHelper.stopBgm(this);
+        this.sound.stopAll();
 
         this.add.rectangle(this.centerX, this.centerY, this.width, this.height, 0x000000)
             .setDepth(1990);
@@ -412,7 +412,7 @@ export class GameScene_7 extends BaseGameScene {
             if (this._endingMvDone) return;
             this._endingMvDone = true;
             mv.stop();
-            if (bgm && !bgm.isPlaying) bgm.resume();
+            VoiceOverHelper.ensureBgm(this);
             GameManager.switchToGameScene(this, 'GameResultScene');
         };
 
