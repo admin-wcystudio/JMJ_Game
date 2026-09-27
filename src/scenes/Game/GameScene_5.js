@@ -22,7 +22,7 @@ export class GameScene_5 extends BaseGameScene {
         }
 
         this.load.image('game5_npc_box_mainstreet_fail_01', `${path}game5_npc_box1.png`);
-        this.load.image('game5_npc_box_mainstreet_fail_02', `${path}game5_npc_box1.png`);
+        this.load.image('game5_npc_box_mainstreet_fail_02', `${path}game5_npc_box2.png`);
 
         if (this.gender === 'M') {
             this.load.image('game5_npc_box_mainstreet_01', `${path}game5_npc_box3_boy.png`);

@@ -115,9 +115,9 @@ export default class VoiceOverHelper {
         game6_npc_box_win_02: 'game6_npc_box4',
         game6_npc_box_tryagain: 'game6_npc_box5',
         game7_npc_box_intro: 'game7_npc_box1',
-        game7_npc_box_win: 'game7_npc_box2',
-        game7_npc_box_win_2: 'game7_npc_box3',
-        game7_npc_box_win_3: 'game7_npc_box4',
+        game7_npc_box_win: 'game7_npc_box3',
+        game7_npc_box_win_2: 'game7_npc_box4',
+        game7_npc_box_win_3: 'game7_npc_box2',
         game7_npc_box_tryagain: 'game7_npc_box5'
     };
 

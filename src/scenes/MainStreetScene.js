@@ -4,6 +4,7 @@ import { CustomPanel, SettingPanel } from '../UI/Panel.js';
 import NpcHelper from '../Character/NpcHelper.js';
 import GameManager from './GameManager.js';
 import VoiceOverHelper from '../Audio/VoiceOverHelper.js';
+import { gameConfig } from '../config.js';
 
 export class MainStreetScene extends Phaser.Scene {
     constructor() {
@@ -323,15 +324,17 @@ export class MainStreetScene extends Phaser.Scene {
             // (game4Result && game4Result.isFinished) &&
             (game5Result && game5Result.isFinished);
 
-        if (isGame1To5Finished) {
+        if (isGame1To5Finished || gameConfig.isTesting) {
             this.minXClamp = 880;
             this.maxXClamp = 4200;
-            this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
+            if (isGame1To5Finished) {
+                this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
 
-            // Destroy objectNpc2 completely and remove it from interaction list
-            objectNpc2.destroy();
-            const idx = this.interactiveNpcs.indexOf(objectNpc2);
-            if (idx > -1) this.interactiveNpcs.splice(idx, 1);
+                // Destroy objectNpc2 completely and remove it from interaction list
+                objectNpc2.destroy();
+                const idx = this.interactiveNpcs.indexOf(objectNpc2);
+                if (idx > -1) this.interactiveNpcs.splice(idx, 1);
+            }
 
             console.log("Game 1 and 5 finished. Using triggeredBackgroundSettings.");
         } else {

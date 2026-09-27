@@ -27,9 +27,10 @@ export class GameScene_7 extends BaseGameScene {
 
         this.load.image('game7_npc_box_intro', `${path}game7_npc_box1.png`);
 
-        this.load.image('game7_npc_box_win', `${path}game7_npc_box2.png`);
-        this.load.image('game7_npc_box_win_2', `${path}game7_npc_box3.png`);
-        this.load.image('game7_npc_box_win_3', `${path}game7_npc_box4.png`);
+        // 成功後：box3 → box4。完成後收句：box2。失敗：box5。
+        this.load.image('game7_npc_box_win', `${path}game7_npc_box3.png`);
+        this.load.image('game7_npc_box_win_2', `${path}game7_npc_box4.png`);
+        this.load.image('game7_npc_box_win_3', `${path}game7_npc_box2.png`);
         this.load.image('game7_npc_box_tryagain', `${path}game7_npc_box5.png`);
 
         this.load.image('final_preview1', `${path}game7_final_preview1.png`);

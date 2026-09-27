@@ -15,8 +15,8 @@ export class GameScene_6 extends BaseGameScene {
         this.load.image('confirm_button', `${path}game6_confirm_button.png`);
         this.load.image('confirm_button_select', `${path}game6_confirm_button_select.png`);
 
-        this.load.image('game2_npc_box_mainstreet_01', `${path}game6_npc_box1.png`);
-        this.load.image('game2_npc_box_mainstreet_02', `${path}game6_npc_box2.png`);
+        this.load.image('game6_npc_box_street_01', `${path}game6_npc_box1.png`);
+        this.load.image('game6_npc_box_street_02', `${path}game6_npc_box2.png`);
         this.load.image('game6_npc_box_win', `${path}game6_npc_box3.png`);
         this.load.image('game6_npc_box_win_02', `${path}game6_npc_box4.png`);
         this.load.image('game6_npc_box_tryagain', `${path}game6_npc_box5.png`);
