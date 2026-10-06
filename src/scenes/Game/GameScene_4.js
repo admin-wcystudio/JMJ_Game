@@ -194,7 +194,7 @@ export class GameScene_4 extends BaseGameScene {
         // Interior walls
         this.createWall(800 - 5, 460, 260, 190, debugVisible, true);
         this.createWall(this.centerX - 520, this.centerY + 130, 250, 240, debugVisible, true);
-        this.createWall(this.centerX - 430, this.centerY + 75, 430, 160, debugVisible, true);
+        this.createWall(this.centerX - 430, this.centerY + 85, 430, 160, debugVisible, true);
 
         //start left
         this.createWall(this.centerX - 170, this.centerY + 330, 250, 150, debugVisible, true);
