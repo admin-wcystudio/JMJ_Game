@@ -291,58 +291,40 @@ export class MainStreetScene extends Phaser.Scene {
             });
         });
 
-        // 判斷關卡1到5是否完成
         const game1Result = GameManager.loadOneGameResult(1);
         const game2Result = GameManager.loadOneGameResult(2);
         const game3Result = GameManager.loadOneGameResult(3);
         const game4Result = GameManager.loadOneGameResult(4);
         const game5Result = GameManager.loadOneGameResult(5);
+        const indoorGamesFinished = [game1Result, game2Result, game3Result, game4Result, game5Result]
+            .every((result) => result && result.isFinished);
 
-        // 遊戲1完成：隱藏 npc1，顯示 npc1b
-        if (game1Result && game1Result.isFinished) {
+        // Keep 李煜 / 婉娘 in place until every indoor game and the door are done.
+        n1.setVisible(true);
+        n1b.setVisible(false);
+        if (indoorGamesFinished) {
             n1.setVisible(false);
             n1.active = false;
-            const idx = this.interactiveNpcs.indexOf(n1);
-            if (idx > -1) this.interactiveNpcs.splice(idx, 1);
-
+            const n1Idx = this.interactiveNpcs.indexOf(n1);
+            if (n1Idx > -1) this.interactiveNpcs.splice(n1Idx, 1);
             n1b.setVisible(true);
-        } else {
-            n1.setVisible(true);
-            n1b.setVisible(false);
-        }
 
-        // 遊戲2完成：移動 npc2
-        if (game2Result && game2Result.isFinished) {
             n2.x = 1130;
-            const idx = this.interactiveNpcs.indexOf(n2);
-            if (idx > -1) this.interactiveNpcs.splice(idx, 1);
+            const n2Idx = this.interactiveNpcs.indexOf(n2);
+            if (n2Idx > -1) this.interactiveNpcs.splice(n2Idx, 1);
+
+            this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
+            objectNpc2.destroy();
+            const lockIdx = this.interactiveNpcs.indexOf(objectNpc2);
+            if (lockIdx > -1) this.interactiveNpcs.splice(lockIdx, 1);
         }
 
-
-        const isGame1To5Finished = (game1Result && game1Result.isFinished) &&
-            //(game2Result && game2Result.isFinished) &&
-            // (game3Result && game3Result.isFinished) &&
-            // (game4Result && game4Result.isFinished) &&
-            (game5Result && game5Result.isFinished);
-
-        if (isGame1To5Finished || gameConfig.isTesting) {
+        if (indoorGamesFinished || gameConfig.isTesting) {
             this.minXClamp = 880;
             this.maxXClamp = 4200;
-            if (isGame1To5Finished) {
-                this.object5 = this.add.image(1850, 685, 'object5').setDepth(14).setScale(1).setVisible(true);
-
-                // Destroy objectNpc2 completely and remove it from interaction list
-                objectNpc2.destroy();
-                const idx = this.interactiveNpcs.indexOf(objectNpc2);
-                if (idx > -1) this.interactiveNpcs.splice(idx, 1);
-            }
-
-            console.log("Game 1 and 5 finished. Using triggeredBackgroundSettings.");
         } else {
-
             this.minXClamp = 2000;
             this.maxXClamp = 4200;
-            console.log("Game 1 to 5 not finished. Using defaultBackgroundSettings.");
         }
 
         // 設定相機邊界為總長度 8414px

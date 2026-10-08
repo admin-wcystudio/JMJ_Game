@@ -305,31 +305,11 @@ export class GameScene_7 extends BaseGameScene {
 
         // Feedback Visuals
         this.showFeedbackLabel(true);
-        this.showBubble('win', this.playerGender);
-    }
-    onWinBubbleClose() {
-
         GameManager.saveGameResult(7, true, this.totalUsedSeconds);
         this.content.setVisible(false);
         this.answerKeyObjects.forEach(img => img.setVisible(false));
         this.fillSlots.forEach(slot => slot.selectArea.setVisible(false));
-
-        this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game7_npc_box_win_2')
-            .setDepth(100).setInteractive({ useHandCursor: true });
-        VoiceOverHelper.playBubbleVo(this, 'game7_npc_box_win_2');
-        this.otherDialog.on('pointerdown', () => {
-            VoiceOverHelper.stop(this);
-            this.otherDialog.destroy();
-            this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, 'game7_npc_box_win_3')
-                .setDepth(100).setInteractive({ useHandCursor: true });
-            VoiceOverHelper.playBubbleVo(this, 'game7_npc_box_win_3');
-            this.otherDialog.on('pointerdown', () => {
-                VoiceOverHelper.stop(this);
-                this.otherDialog.destroy();
-                this.playSuccessVideoFeedback();
-            });
-        });
-
+        this.playSuccessVideoFeedback();
     }
 
     playSuccessVideoFeedback() {
@@ -349,6 +329,34 @@ export class GameScene_7 extends BaseGameScene {
         this.video = this.add.video(this.centerX, this.centerY, `success_video`).setDepth(100);
         this.video.play(true);
 
+        const lines = ['game7_npc_box_win', 'game7_npc_box_win_2', 'game7_npc_box_win_3'];
+        const showWinDialogue = (index) => {
+            if (this.otherDialog) {
+                this.otherDialog.destroy();
+                this.otherDialog = null;
+            }
+
+            this.otherDialog = this.add.image(this.centerX, this.cameras.main.height * 0.8, lines[index])
+                .setDepth(150)
+                .setInteractive({ useHandCursor: true });
+            VoiceOverHelper.playBubbleVo(this, lines[index]);
+
+            this.otherDialog.once('pointerdown', () => {
+                VoiceOverHelper.stop(this);
+                this.otherDialog.destroy();
+                this.otherDialog = null;
+                if (index < lines.length - 1) {
+                    showWinDialogue(index + 1);
+                    return;
+                }
+                this.showEndPreview();
+            });
+        };
+
+        this.time.delayedCall(400, () => showWinDialogue(0));
+    }
+
+    showEndPreview() {
         this.descriptionPanel = new CustomPanel(this, this.centerX, this.centerY, [{
             content: 'game7_success_description',
             closeBtn: 'close_btn',
@@ -359,10 +367,7 @@ export class GameScene_7 extends BaseGameScene {
             this.descriptionPanel.destroy();
             this.showFinalPanel();
         });
-
-        this.time.delayedCall(4000, () => {
-            this.descriptionPanel.show();
-        });
+        this.descriptionPanel.show();
     }
 
     showFinalPanel() {
